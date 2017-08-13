@@ -38,6 +38,12 @@ Once this succeeds, you can call one of the methods on the session instance to r
 var doorbotHistory = await session.GetDoorbotsHistory();
 ```
 
+To save a recording directly to your disk:
+
+```C#
+await session.GetDoorbotHistoryRecording("6000000004618901011", "c:\\temp\\recording.mp4");
+```
+
 Check out the UnitTest project in this solution for full insight in the possibilities and working code samples.
 
 ## Available via NuGet
