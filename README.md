@@ -15,16 +15,22 @@ This API is built using the Microsoft .NET 4.6.2 framework and is fully asynchro
 
 To communicate with the Ring API, create a new session instance using:
 
-var session = new Api.Session(your@email.com", "yourpassword");
+```C#
+var session = new Api.Session("your@email.com", "yourpassword");
+```
 
 Note that this line does not perform any communications with the Ring API yet. You need to manually trigger authenticate before you can start using the session:
 
+```C#
 await session.Authenticate();
+```
 
 Once this succeeds, you can call one of the methods on the session instance to retrieve data, i.e.:
 
+```C#
 // Retrieves all recorded doorbell events
 var doorbotHistory = await session.GetDoorbotsHistory();
+```
 
 Check out the UnitTest project in this solution for full insight in the possibilities and working code samples.
 
@@ -35,6 +41,15 @@ You can also pull this API in as a NuGet package by adding "KoenZomers.Ring.Api"
 Install-Package KoenZomers.Ring.Api
 
 Package statistics: https://www.nuget.org/packages/KoenZomers.Ring.Api
+
+## Current functionality
+
+With this API at its current state you can:
+
+- Authenticate to the Ring API
+- Retrieve all registered Ring devices (Rings and Chimes) under your account
+- Retrieve the event history of your Ring devices
+- Download the movie recording of the event of your Ring devices
 
 ## Feedback
 
