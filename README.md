@@ -22,7 +22,7 @@ using KoenZomers.Ring.Api;
 Then create a new session instance using:
 
 ```C#
-var session = new Api.Session("your@email.com", "yourpassword");
+var session = new Session("your@email.com", "yourpassword");
 ```
 
 Note that this line does not perform any communications with the Ring API yet. You need to manually trigger authenticate before you can start using the session:
