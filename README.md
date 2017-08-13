@@ -13,7 +13,13 @@ This API is built using the Microsoft .NET 4.6.2 framework and is fully asynchro
 
 ## Usage Instructions
 
-To communicate with the Ring API, create a new session instance using:
+To communicate with the Ring API, add the NuGet package to your solution and add a using reference in your code:
+
+```C#
+using KoenZomers.Ring.Api;
+```
+
+Then create a new session instance using:
 
 ```C#
 var session = new Api.Session("your@email.com", "yourpassword");
