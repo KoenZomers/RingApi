@@ -2,7 +2,6 @@
 using System.IO;
 using System.Net;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Collections.Specialized;
 using System;
 using System.Threading.Tasks;
@@ -101,94 +100,6 @@ namespace KoenZomers.Ring.Api
 
             var reader = new StreamReader(dataStream);
             return await reader.ReadToEndAsync();
-        }
-
-        /// <summary>
-        /// Sends a POST request using the multipart form data method to download the pfSense backup file
-        /// </summary>
-        /// <param name="url">Url to POST the backup file request to</param>
-        /// <param name="formFields">Dictonary with key/value pairs containing the forms data to POST to the webserver</param>
-        /// <param name="cookieContainer">Cookies which have been recorded for this session</param>
-        /// <param name="filename">Filename of the download as provided by pfSense (out parameter)</param>
-        /// <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
-        /// <param name="referer">Referer to add to the HTTP header. Leave NULL to not send a referer.</param>
-        /// <returns>The website contents returned by the webserver after posting the data</returns>
-        public static string DownloadBackupFile(string url, Dictionary<string, string> formFields, CookieContainer cookieContainer, out string filename, int timeout = 60000, string referer = null)
-        {
-            filename = null;
-
-            // Define the form separator to use in the POST request
-            const string formDataBoundary = "---------------------------7dc1873b1609fa";
-
-            // Construct the POST request which performs the login
-            var request = (HttpWebRequest)WebRequest.Create(url);
-            request.Method = "POST";
-            request.Accept = "*/*";
-            request.ServicePoint.Expect100Continue = false;
-            request.CookieContainer = cookieContainer;
-            request.Timeout = timeout;
-
-            // Construct POST data
-            var postData = new StringBuilder();
-            foreach (var formField in formFields)
-            {
-                postData.AppendLine(string.Concat("--", formDataBoundary));
-                postData.AppendLine(string.Format("Content-Disposition: form-data; name=\"{0}\"", formField.Key));
-                postData.AppendLine();
-                postData.AppendLine(formField.Value);
-            }
-            postData.AppendLine(string.Concat("--", formDataBoundary, "--"));
-
-            // Convert the POST data to a byte array
-            var postDataByteArray = Encoding.UTF8.GetBytes(postData.ToString());
-
-            // Check if a referer should be added to the HTTP request
-            if (referer != null)
-            {
-                request.Referer = referer;
-            }
-
-            // Set the ContentType property of the WebRequest
-            request.ContentType = string.Concat("multipart/form-data; boundary=", formDataBoundary);
-
-            // Set the ContentLength property of the WebRequest.
-            request.ContentLength = postDataByteArray.Length;
-
-            // Get the request stream
-            var dataStream = request.GetRequestStream();
-
-            // Write the POST data to the request stream
-            dataStream.Write(postDataByteArray, 0, postDataByteArray.Length);
-
-            // Close the Stream object
-            dataStream.Close();
-
-            // Receive the response from the webserver
-            var response = request.GetResponse() as HttpWebResponse;
-            
-            // Make sure the webserver has sent a response
-            if (response == null) return null;            
-
-            dataStream = response.GetResponseStream();
-
-            // Make sure the datastream with the response is available
-            if (dataStream == null) return null;
-
-            // Get the content-disposition header and use a regex on its value to find out what filename pfSense assigns to the download
-            var contentDispositionHeader = response.Headers["Content-Disposition"];
-            
-            // Verify that a content disposition header was returned
-            if (contentDispositionHeader == null) return null;
-
-            var filenameRegEx = Regex.Match(contentDispositionHeader, @"filename=(?<filename>.*)(?:\s|\z)");
-            
-            if(filenameRegEx.Success && filenameRegEx.Groups["filename"].Success)
-            {
-                filename = filenameRegEx.Groups["filename"].Value;
-            }
-
-            var reader = new StreamReader(dataStream);
-            return reader.ReadToEnd();
         }
 
         /// <summary>
