@@ -1,7 +1,10 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\Api",
+    "\\Documentation",
+    "\\UnitTest"
   ],
-  "SelectedNode": "\\KoenZomers.Tools.pfSense.sln",
+  "SelectedNode": "\\Api\\HttpUtility.cs",
   "PreviewInSolutionExplorer": false
 }

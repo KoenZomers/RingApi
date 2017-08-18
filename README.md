@@ -3,6 +3,10 @@ This library for C# will allow you to easily communicate with the Ring API and r
 
 ## Version History
 
+0.2 - released August 18, 2017
+
+- Added the option to specify the device information in the Authenticate method
+
 0.1 - released August 13, 2017
 
 - Initial version

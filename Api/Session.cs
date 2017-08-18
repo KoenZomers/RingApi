@@ -68,34 +68,73 @@ namespace KoenZomers.Ring.Api
         /// <summary>
         /// Authenticates to the Ring API
         /// </summary>
+        /// <param name="operatingSystem">Operating system from which this API is accessed. Defaults to 'windows'. Required field.</param>
+        /// <param name="hardwareId">Hardware identifier of the device for which this API is accessed. Defaults to 'unspecified'. Required field.</param>
+        /// <param name="appBrand">Device brand for which this API is accessed. Defaults to 'ring'. Optional field.</param>
+        /// <param name="deviceModel">Device model for which this API is accessed. Defaults to 'unspecified'. Optional field.</param>
+        /// <param name="deviceName">Name of the device from which this API is being used. Defaults to 'unspecified'. Optional field.</param>
+        /// <param name="resolution">Screen resolution on which this API is being used. Defaults to '800x600'. Optional field.</param>
+        /// <param name="appVersion">Version of the app from which this API is being used. Defaults to '1.3.810'. Optional field.</param>
+        /// <param name="appInstallationDate">Date and time at which the app was installed from which this API is being used. By default not specified. Optional field.</param>
+        /// <param name="manufacturer">Name of the manufacturer of the product for which this API is being accessed. Defaults to 'unspecified'. Optional field.</param>
+        /// <param name="deviceType">Type of device from which this API is being used. Defaults to 'tablet'. Optional field.</param>
+        /// <param name="architecture">Architecture of the system from which this API is being used. Defaults to 'x64'. Optional field.</param>
+        /// <param name="language">Language of the app from which this API is being used. Defaults to 'en'. Optional field.</param>        
         /// <returns>Session object if the authentication was successful</returns>
-        public async Task<Entities.Session> Authenticate()
+        public async Task<Entities.Session> Authenticate(   string operatingSystem = "windows", 
+                                                            string hardwareId = "unspecified", 
+                                                            string appBrand = "ring", 
+                                                            string deviceModel = "unspecified", 
+                                                            string deviceName = "unspecified", 
+                                                            string resolution = "800x600", 
+                                                            string appVersion = "1.3.810",
+                                                            DateTime? appInstallationDate = null,
+                                                            string manufacturer = "unspecified",
+                                                            string deviceType = "tablet",
+                                                            string architecture = "x64",
+                                                            string language = "en")
         {
-            var response = await HttpUtility.FormPost(
-                                                new Uri(RingApiBaseUrl, "session"),
-                                                new Dictionary<string, string>
-                                                {
-                                                    { "device[metadata][device_model]", "Test" },
-                                                    { "device[metadata][device_name]", "Test" },
-                                                    { "device[metadata][resolution]", "800x600" },
-                                                    { "device[metadata][app_version]", "1.3.810" },
-                                                    { "device[metadata][app_instalation_date]", string.Format("{0:yyyy-MM-dd}+{0:HH}%3A{0:mm}%3A{0:ss}Z", DateTime.Now) },
-                                                    { "device[metadata][manufacturer]", "Test" },
-                                                    { "device[metadata][device_type]", "tablet" },
-                                                    { "device[metadata][architecture]", "x64" },
-                                                    { "device[metadata][language]", "en" },
-                                                    { "device[os]", "windows" },
-                                                    { "device[hardware_id]", "Test" },
-                                                    { "device[app_brand]", "ring" }
-                                                },
-                                                new System.Collections.Specialized.NameValueCollection
-                                                {
-                                                    { "Accept-Encoding", "gzip, deflate" },
-                                                    { "X-API-LANG", "en" },
-                                                    { "Authorization", $"Basic {CredentialsEncoded}" }
-                                                },
-                                                null);
+            // Check for mandatory parameters
+            if (string.IsNullOrEmpty(operatingSystem))
+            {
+                throw new ArgumentNullException("operatingSystem", "Operating system is mandatory");
+            }
+            if (string.IsNullOrEmpty(hardwareId))
+            {
+                throw new ArgumentNullException("hardwareId", "HardwareId system is mandatory");
+            }
 
+            // Construct the Form POST fields to send along with the authentication request
+            var formFields = new Dictionary<string, string>
+            {
+                { "device[os]", operatingSystem },
+                { "device[hardware_id]", hardwareId }
+            };
+
+            // Add optional fields if they have been provided
+            if (!string.IsNullOrEmpty(appBrand)) formFields.Add("device[app_brand]", appBrand);
+            if (!string.IsNullOrEmpty(deviceModel)) formFields.Add("device[metadata][device_model]", deviceModel);
+            if (!string.IsNullOrEmpty(deviceName)) formFields.Add("device[metadata][device_name]", deviceName);
+            if (!string.IsNullOrEmpty(resolution)) formFields.Add("device[metadata][resolution]", resolution);
+            if (!string.IsNullOrEmpty(appVersion)) formFields.Add("device[metadata][app_version]", appVersion);
+            if (appInstallationDate.HasValue) formFields.Add("device[metadata][app_instalation_date]", string.Format("{0:yyyy-MM-dd}+{0:HH}%3A{0:mm}%3A{0:ss}Z", appInstallationDate.Value));
+            if (!string.IsNullOrEmpty(manufacturer)) formFields.Add("device[metadata][manufacturer]", manufacturer);
+            if (!string.IsNullOrEmpty(deviceType)) formFields.Add("device[metadata][device_type]", deviceType);
+            if (!string.IsNullOrEmpty(architecture)) formFields.Add("device[metadata][architecture]", architecture);
+            if (!string.IsNullOrEmpty(language)) formFields.Add("device[metadata][language]", language);
+
+            // Make the Form POST request to authenticate
+            var response = await HttpUtility.FormPost(  new Uri(RingApiBaseUrl, "session"),
+                                                        formFields,
+                                                        new System.Collections.Specialized.NameValueCollection
+                                                        {
+                                                            { "Accept-Encoding", "gzip, deflate" },
+                                                            { "X-API-LANG", "en" },
+                                                            { "Authorization", $"Basic {CredentialsEncoded}" }
+                                                        },
+                                                        null);
+
+            // Deserialize the JSON result into a typed object
             var session = JsonConvert.DeserializeObject<Entities.Session>(response);
             AuthenticationToken = session.Profile.AuthenticationToken;
 
