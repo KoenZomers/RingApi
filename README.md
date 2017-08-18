@@ -48,7 +48,9 @@ To save a recording directly to your disk:
 await session.GetDoorbotHistoryRecording("6000000004618901011", "c:\\temp\\recording.mp4");
 ```
 
-Check out the UnitTest project in this solution for full insight in the possibilities and working code samples.
+### Unit Tests
+
+Check out the UnitTest project in this solution for full insight in the possibilities and working code samples. If you want to run the Unit Tests, just copy the App.sample.config file in the UnitTest project to App.config and fill in your Ring username and password and you're good to go to run all tests. They will not make any changes to your Ring devices or Ring profile, just retrieve information, so you can run it without any risk.
 
 ## Available via NuGet
 
