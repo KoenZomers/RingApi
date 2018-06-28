@@ -62,6 +62,7 @@
     <Compile Include="Entities\DoorbotFeatures.cs" />
     <Compile Include="Entities\DoorbotHistoryEvent.cs" />
     <Compile Include="Entities\DoorbotHistoryEventRecording.cs" />
+    <Compile Include="Entities\OAuthToken.cs" />
     <Compile Include="Entities\SessionFeatures.cs" />
     <Compile Include="Entities\Owner.cs" />
     <Compile Include="Entities\Profile.cs" />

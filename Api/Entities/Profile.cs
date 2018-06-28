@@ -24,5 +24,14 @@ namespace KoenZomers.Ring.Api.Entities
 
         [JsonProperty(PropertyName = "features")]
         public SessionFeatures Features { get; set; }
+
+        [JsonProperty(PropertyName = "app_brand")]
+        public string AppBrand { get; set; }
+
+        [JsonProperty(PropertyName = "user_flow")]
+        public string UserFlow { get; set; }
+
+        [JsonProperty(PropertyName = "explorer_program_terms")]
+        public string ExplorerProgramTerms { get; set; }
     }
 }

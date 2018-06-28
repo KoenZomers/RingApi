@@ -59,7 +59,11 @@ namespace KoenZomers.Ring.Api
             request.ServicePoint.Expect100Continue = false;
             request.CookieContainer = cookieContainer;
             request.Timeout = timeout;
-            request.Headers.Add(headerFields);
+
+            if (headerFields != null)
+            {
+                request.Headers.Add(headerFields);
+            }
 
             // Construct POST data
             var postData = new StringBuilder();

@@ -3,6 +3,11 @@ This library for C# will allow you to easily communicate with the Ring API and r
 
 ## Version History
 
+0.2.1 - released June 28, 2018
+
+- Ring had changed their authentication from Basic authentication to simple HTTP Form POST authentication. Updated the code to accommodate this. Thanks to Kevin Chemali for bringing this to my attention.
+- Few additional new properties provided in the session by the Ring service are now mapped to the typed Session object.
+
 0.2 - released August 18, 2017
 
 - Added the option to specify the device information in the Authenticate method

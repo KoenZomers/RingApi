@@ -46,18 +46,6 @@ namespace KoenZomers.Ring.UnitTest
         }
 
         /// <summary>
-        /// Test if the Base64 Credential Encoding works properly
-        /// </summary>
-        [TestMethod]
-        public void ValidateEncodedCredentialsTest()
-        {
-            var session = new Api.Session(Username, Password);
-
-            var base64DecodedCredentials = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(session.CredentialsEncoded));
-            Assert.AreEqual(base64DecodedCredentials, $"{Username}:{Password}", "Base64 Credential Decoding failed");
-        }
-
-        /// <summary>
         /// Test if the devices can be retrieved
         /// </summary>
         [TestMethod]

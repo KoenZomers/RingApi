@@ -23,9 +23,15 @@ namespace KoenZomers.Ring.Api
         public string Password { get; private set; }
 
         /// <summary>
-        /// Returns the Base64 Encoded username and password to use in the authenticate header
+        /// Returns the Base64 Encoded username and password that was used in the authenticate header in the past. Ring no longer uses basic authentication thus this property will be removed in a future update. Do not use this property.
         /// </summary>
+        [Obsolete("The Ring API no longer uses Basic authentication thus this property will not be used anymore and will be removed in a future update. Update your code to stop using this property.", false)]
         public string CredentialsEncoded => Convert.ToBase64String(Encoding.UTF8.GetBytes($"{Username}:{Password}"));
+
+        /// <summary>
+        /// Uri on which OAuth tokens can be requested from Ring
+        /// </summary>
+        public Uri RingApiOAuthUrl => new Uri("https://oauth.ring.com/oauth/token");
 
         /// <summary>
         /// Base Uri with which all Ring API requests start
@@ -87,7 +93,7 @@ namespace KoenZomers.Ring.Api
                                                             string deviceModel = "unspecified", 
                                                             string deviceName = "unspecified", 
                                                             string resolution = "800x600", 
-                                                            string appVersion = "1.3.810",
+                                                            string appVersion = "2.1.8",
                                                             DateTime? appInstallationDate = null,
                                                             string manufacturer = "unspecified",
                                                             string deviceType = "tablet",
@@ -105,37 +111,57 @@ namespace KoenZomers.Ring.Api
             }
 
             // Construct the Form POST fields to send along with the authentication request
-            var formFields = new Dictionary<string, string>
+            var oAuthformFields = new Dictionary<string, string>
+            {
+                { "grant_type", "password" },
+                { "username", Username },
+                { "password", Password },
+                { "client_id", "RingWindows" },
+                { "scope", "client" }
+            };
+
+            // Make the Form POST request to request an OAuth Token
+            var oAuthResponse = await HttpUtility.FormPost( RingApiOAuthUrl,
+                                                            oAuthformFields,
+                                                            null,
+                                                            null);
+
+
+            // Deserialize the JSON result into a typed object
+            var oAuthToken = JsonConvert.DeserializeObject<Entities.OAutToken>(oAuthResponse);
+
+            // Construct the Form POST fields to send along with the session request
+            var sessionFormFields = new Dictionary<string, string>
             {
                 { "device[os]", operatingSystem },
                 { "device[hardware_id]", hardwareId }
             };
 
             // Add optional fields if they have been provided
-            if (!string.IsNullOrEmpty(appBrand)) formFields.Add("device[app_brand]", appBrand);
-            if (!string.IsNullOrEmpty(deviceModel)) formFields.Add("device[metadata][device_model]", deviceModel);
-            if (!string.IsNullOrEmpty(deviceName)) formFields.Add("device[metadata][device_name]", deviceName);
-            if (!string.IsNullOrEmpty(resolution)) formFields.Add("device[metadata][resolution]", resolution);
-            if (!string.IsNullOrEmpty(appVersion)) formFields.Add("device[metadata][app_version]", appVersion);
-            if (appInstallationDate.HasValue) formFields.Add("device[metadata][app_instalation_date]", string.Format("{0:yyyy-MM-dd}+{0:HH}%3A{0:mm}%3A{0:ss}Z", appInstallationDate.Value));
-            if (!string.IsNullOrEmpty(manufacturer)) formFields.Add("device[metadata][manufacturer]", manufacturer);
-            if (!string.IsNullOrEmpty(deviceType)) formFields.Add("device[metadata][device_type]", deviceType);
-            if (!string.IsNullOrEmpty(architecture)) formFields.Add("device[metadata][architecture]", architecture);
-            if (!string.IsNullOrEmpty(language)) formFields.Add("device[metadata][language]", language);
+            if (!string.IsNullOrEmpty(appBrand)) sessionFormFields.Add("device[app_brand]", appBrand);
+            if (!string.IsNullOrEmpty(deviceModel)) sessionFormFields.Add("device[metadata][device_model]", deviceModel);
+            if (!string.IsNullOrEmpty(deviceName)) sessionFormFields.Add("device[metadata][device_name]", deviceName);
+            if (!string.IsNullOrEmpty(resolution)) sessionFormFields.Add("device[metadata][resolution]", resolution);
+            if (!string.IsNullOrEmpty(appVersion)) sessionFormFields.Add("device[metadata][app_version]", appVersion);
+            if (appInstallationDate.HasValue) sessionFormFields.Add("device[metadata][app_instalation_date]", string.Format("{0:yyyy-MM-dd}+{0:HH}%3A{0:mm}%3A{0:ss}Z", appInstallationDate.Value));
+            if (!string.IsNullOrEmpty(manufacturer)) sessionFormFields.Add("device[metadata][manufacturer]", manufacturer);
+            if (!string.IsNullOrEmpty(deviceType)) sessionFormFields.Add("device[metadata][device_type]", deviceType);
+            if (!string.IsNullOrEmpty(architecture)) sessionFormFields.Add("device[metadata][architecture]", architecture);
+            if (!string.IsNullOrEmpty(language)) sessionFormFields.Add("device[metadata][language]", language);
 
             // Make the Form POST request to authenticate
-            var response = await HttpUtility.FormPost(  new Uri(RingApiBaseUrl, "session"),
-                                                        formFields,
-                                                        new System.Collections.Specialized.NameValueCollection
-                                                        {
-                                                            { "Accept-Encoding", "gzip, deflate" },
-                                                            { "X-API-LANG", "en" },
-                                                            { "Authorization", $"Basic {CredentialsEncoded}" }
-                                                        },
-                                                        null);
+            var sessionResponse = await HttpUtility.FormPost(   new Uri(RingApiBaseUrl, "session"),
+                                                                sessionFormFields,
+                                                                new System.Collections.Specialized.NameValueCollection
+                                                                {
+                                                                    { "Accept-Encoding", "gzip, deflate" },
+                                                                    { "X-API-LANG", "en" },
+                                                                    { "Authorization", $"Bearer {oAuthToken.AccessToken}" }
+                                                                },
+                                                                null);
 
             // Deserialize the JSON result into a typed object
-            var session = JsonConvert.DeserializeObject<Entities.Session>(response);
+            var session = JsonConvert.DeserializeObject<Entities.Session>(sessionResponse);
             AuthenticationToken = session.Profile.AuthenticationToken;
 
             return session;
