@@ -41,18 +41,24 @@ namespace KoenZomers.Ring.Api
         /// <summary>
         /// Boolean indicating if the current session is authenticated
         /// </summary>
-        public bool IsAuthenticated => !string.IsNullOrEmpty(AuthenticationToken);
+        public bool IsAuthenticated => OAuthToken != null;
 
         /// <summary>
         /// Authentication Token that will be used to communicate with the Ring API
         /// </summary>
-        public string AuthenticationToken { get; private set; }
+        public string AuthenticationToken
+        {
+            get { return OAuthToken?.AccessToken; }
+        }
+
+        /// <summary>
+        /// OAuth Token for communicating with the Ring API
+        /// </summary>
+        public Entities.OAutToken OAuthToken { get; private set; }
 
         #endregion
 
         #region Fields
-
-
 
         #endregion
 
@@ -65,6 +71,29 @@ namespace KoenZomers.Ring.Api
         {
             Username = username;
             Password = password;
+        }
+
+        /// <summary>
+        /// Initiates a new session without username/password. Only to be used with the static method to create a session based on a RefreshToken.
+        /// </summary>
+        private Session()
+        {
+        }
+
+        #endregion
+
+        #region Static methods
+
+        /// <summary>
+        /// Creates a new session to the Ring API using a RefreshToken received from a previous session
+        /// </summary>
+        /// <param name="refreshToken">RefreshToken received from the prior authentication</param>
+        /// <returns>Authenticated session based on the RefreshToken or NULL if the session could not be authenticated</returns>
+        public static async Task<Session> GetSessionByRefreshToken(string refreshToken)
+        {
+            var session = new Session();
+            await session.RefreshSession(refreshToken);
+            return session;
         }
 
         #endregion
@@ -128,7 +157,7 @@ namespace KoenZomers.Ring.Api
 
 
             // Deserialize the JSON result into a typed object
-            var oAuthToken = JsonConvert.DeserializeObject<Entities.OAutToken>(oAuthResponse);
+            OAuthToken = JsonConvert.DeserializeObject<Entities.OAutToken>(oAuthResponse);
 
             // Construct the Form POST fields to send along with the session request
             var sessionFormFields = new Dictionary<string, string>
@@ -156,15 +185,57 @@ namespace KoenZomers.Ring.Api
                                                                 {
                                                                     { "Accept-Encoding", "gzip, deflate" },
                                                                     { "X-API-LANG", "en" },
-                                                                    { "Authorization", $"Bearer {oAuthToken.AccessToken}" }
+                                                                    { "Authorization", $"Bearer {OAuthToken.AccessToken}" }
                                                                 },
                                                                 null);
 
             // Deserialize the JSON result into a typed object
             var session = JsonConvert.DeserializeObject<Entities.Session>(sessionResponse);
-            AuthenticationToken = session.Profile.AuthenticationToken;
 
             return session;
+        }
+
+        /// <summary>
+        /// Authenticates to the Ring API
+        /// </summary>
+        /// <param name="refreshToken">RefreshToken to set up a new authenticated session</param>
+        public async Task RefreshSession(string refreshToken)
+        {
+            // Check for mandatory parameters
+            if (string.IsNullOrEmpty(refreshToken))
+            {
+                throw new ArgumentNullException("refreshToken", "refreshToken is mandatory");
+            }
+
+            // Construct the Form POST fields to send along with the authentication request
+            var oAuthformFields = new Dictionary<string, string>
+            {
+                { "grant_type", "refresh_token" },
+                { "refresh_token", refreshToken }
+            };
+
+            // Make the Form POST request to request an OAuth Token
+            try
+            {
+                var oAuthResponse = await HttpUtility.FormPost(RingApiOAuthUrl,
+                                                                oAuthformFields,
+                                                                null,
+                                                                null);
+
+
+                // Deserialize the JSON result into a typed object
+                OAuthToken = JsonConvert.DeserializeObject<Entities.OAutToken>(oAuthResponse);
+            }
+            catch(System.Net.WebException e)
+            {
+                // If a WebException gets thrown with Unauthorized it means that the refresh token was not valid, throw a custom exception to indicate this
+                if(e.Message.Contains("Unauthorized"))
+                {
+                    throw new Exceptions.AuthenticationFailedException(e);
+                }
+
+                throw e;
+            }
         }
 
         /// <summary>
@@ -178,8 +249,8 @@ namespace KoenZomers.Ring.Api
                 throw new Exceptions.SessionNotAuthenticatedException();
             }
 
-            var response = await HttpUtility.GetContents(new Uri(RingApiBaseUrl, $"ring_devices?auth_token={AuthenticationToken}&api_version=9"), null);
-
+            var response = await HttpUtility.GetContents(new Uri(RingApiBaseUrl, $"ring_devices"), AuthenticationToken);
+            
             var devices = JsonConvert.DeserializeObject<Entities.Devices>(response);
             return devices;
         }
@@ -195,7 +266,7 @@ namespace KoenZomers.Ring.Api
                 throw new Exceptions.SessionNotAuthenticatedException();
             }
 
-            var response = await HttpUtility.GetContents(new Uri(RingApiBaseUrl, $"doorbots/history?auth_token={AuthenticationToken}&api_version=9"), null);
+            var response = await HttpUtility.GetContents(new Uri(RingApiBaseUrl, $"doorbots/history"), AuthenticationToken);
 
             var doorbotHistory = JsonConvert.DeserializeObject<List<Entities.DoorbotHistoryEvent>>(response);
             return doorbotHistory;
@@ -223,7 +294,7 @@ namespace KoenZomers.Ring.Api
                 throw new Exceptions.SessionNotAuthenticatedException();
             }
 
-            var stream = await HttpUtility.DownloadFile(new Uri(RingApiBaseUrl, $"dings/{dingId}/recording?auth_token={AuthenticationToken}&api_version=9"), null);
+            var stream = await HttpUtility.DownloadFile(new Uri(RingApiBaseUrl, $"dings/{dingId}/recording?disable_redirect=true"), AuthenticationToken);
             return stream;
         }
 

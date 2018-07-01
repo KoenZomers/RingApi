@@ -22,7 +22,6 @@ namespace KoenZomers.Ring.UnitTest
         /// <summary>
         /// Test the scenario where the authentication should succeed
         /// </summary>
-        /// <returns></returns>
         [TestMethod]
         public async Task AuthenticateSuccessTest()
         {
@@ -35,7 +34,6 @@ namespace KoenZomers.Ring.UnitTest
         /// <summary>
         /// Test the scenario where the authentication would fail
         /// </summary>
-        /// <returns></returns>
         [TestMethod]
         [ExpectedException(typeof(System.Net.WebException))]
         public async Task AuthenticateFailTest()
@@ -43,6 +41,32 @@ namespace KoenZomers.Ring.UnitTest
             var session = new Api.Session("test@test.com", "someinvalidpassword");
 
             await session.Authenticate();
+        }
+
+        /// <summary>
+        /// Test the scenario where a refresh token is used to successfully set up an authenticated session
+        /// </summary>
+        [TestMethod]
+        public async Task AuthenticateWithRefreshTokenSuccessTest()
+        {
+            // Authenticate normally the first time in order to get a refresh token to test
+            var session = new Api.Session(Username, Password);
+            await session.Authenticate();
+
+            // Request a new authenticated session based on the RefreshToken
+            var refreshedSession = await Api.Session.GetSessionByRefreshToken(session.OAuthToken.RefreshToken);
+            Assert.IsTrue(refreshedSession.IsAuthenticated, "Failed to authenticate using refresh token");
+        }
+
+        /// <summary>
+        /// Test the scenario where a refresh token is used to set up an authenticated session which fails
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(Api.Exceptions.AuthenticationFailedException))]
+        public async Task AuthenticateWithRefreshTokenFailTest()
+        {
+            // Request a new authenticated session based on a non existing RefreshToken
+            var refreshedSession = await Api.Session.GetSessionByRefreshToken("abcdefghijklmnopqrstuvwxyz");
         }
 
         /// <summary>

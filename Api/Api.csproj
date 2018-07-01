@@ -67,6 +67,8 @@
     <Compile Include="Entities\Owner.cs" />
     <Compile Include="Entities\Profile.cs" />
     <Compile Include="Entities\Session.cs" />
+    <Compile Include="Exceptions\AuthenticationFailedException.cs" />
+    <Compile Include="Exceptions\ThrottledException.cs" />
     <Compile Include="Exceptions\SessionNotAuthenticatedException.cs" />
     <Compile Include="Session.cs" />
     <Compile Include="HttpUtility.cs" />

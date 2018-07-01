@@ -3,6 +3,13 @@ This library for C# will allow you to easily communicate with the Ring API and r
 
 ## Version History
 
+0.2.2 - released July 2, 2018
+
+- Ring seems to have switched off their old API command support. Updated the methods to use the new API.
+- Added static `Api.Session.GetSessionByRefreshToken(string refreshToken)` method to support using OAuth Refresh Tokens for getting an Access Token.
+- Ring seems to have introduced throttling protection against too many requests sent to their API which seems to kick in pretty easily. I've added a specific `Api.Exceptions.ThrottlingException` to notify you if the request has failed due too throttling. Just try it again in a few minutes and it typically works again. Check the `InnerException` of it for the glory details on why it failed.
+- Added property `OAuthToken` on the `Api.Session` class which gives you access to the full OAuth Token retrieved during authentication against the Ring API.
+
 0.2.1 - released June 28, 2018
 
 - Ring had changed their authentication from Basic authentication to simple HTTP Form POST authentication. Updated the code to accommodate this. Thanks to Kevin Chemali for bringing this to my attention.

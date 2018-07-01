@@ -17,18 +17,37 @@ namespace KoenZomers.Ring.Api
         /// Performs a GET request to the provided url to return the contents
         /// </summary>
         /// <param name="url">Url of the request to make</param>
-        /// <param name="cookieContainer">Cookies which have been recorded for this session</param>
+        /// <param name="bearerToken">Bearer token to authenticate the request with. Leave out to not authenticate the session.</param>
         /// <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
         /// <returns>Contents of the result returned by the webserver</returns>
-        public static async Task<string> GetContents(Uri url, CookieContainer cookieContainer, int timeout = 60000)
+        public static async Task<string> GetContents(Uri url, string bearerToken = null, int timeout = 60000)
         {
             // Construct the request
             var request = (HttpWebRequest)WebRequest.Create(url);
-            request.CookieContainer = cookieContainer;
+
+            // Check if the OAuth Bearer Authorization token should be added to the request
+            if(!string.IsNullOrEmpty(bearerToken))
+            {
+                request.Headers[HttpRequestHeader.Authorization] = $"Bearer {bearerToken}";
+            }
             request.Timeout = timeout;
 
             // Send the request to the webserver
-            var response = await request.GetResponseAsync();
+            WebResponse response;
+            try
+            { 
+                response = await request.GetResponseAsync();
+            }
+            catch (WebException e)
+            {
+                // Check if the response is HTTP 429 Too Many Requests throttling
+                if (e.Message.IndexOf("Too many requests", StringComparison.InvariantCultureIgnoreCase) >= 0)
+                {
+                    throw new Exceptions.ThrottledException(e);
+                }
+
+                throw e;
+            }
 
             // Get the stream containing content returned by the server.
             var dataStream = response.GetResponseStream();
@@ -92,7 +111,21 @@ namespace KoenZomers.Ring.Api
             dataStream.Close();
 
             // Receive the response from the webserver
-            var response = await request.GetResponseAsync() as HttpWebResponse;
+            WebResponse response;
+            try
+            {
+                response = await request.GetResponseAsync() as HttpWebResponse;
+            }
+            catch (WebException e)
+            {
+                // Check if the response is HTTP 429 Too Many Requests throttling
+                if (e.Message.IndexOf("Too many requests", StringComparison.InvariantCultureIgnoreCase) >= 0)
+                {
+                    throw new Exceptions.ThrottledException(e);
+                }
+
+                throw e;
+            }
 
             // Make sure the webserver has sent a response
             if (response == null) return null;
@@ -110,18 +143,23 @@ namespace KoenZomers.Ring.Api
         /// Downloads the file from the provided Url
         /// </summary>
         /// <param name="url">Url to download the file from</param>
-        /// <param name="cookieContainer">Cookies which have been recorded for this session</param>
         /// <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
+        /// <param name="bearerToken">Bearer token to authenticate the request with. Leave out to not authenticate the session.</param>
         /// <returns>Stream with the file download</returns>
-        public static async Task<Stream> DownloadFile(Uri url, CookieContainer cookieContainer, int timeout = 60000)
+        public static async Task<Stream> DownloadFile(Uri url, string bearerToken = null, int timeout = 60000)
         {
             var request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = WebRequestMethods.Http.Get;
             request.Accept = "*/*";
             request.AddRange("bytes", 0);
-            request.CookieContainer = cookieContainer;
             request.Timeout = timeout;
             request.AllowAutoRedirect = true;
+
+            // Check if the OAuth Bearer Authorization token should be added to the request
+            if (!string.IsNullOrEmpty(bearerToken))
+            {
+                request.Headers[HttpRequestHeader.Authorization] = $"Bearer {bearerToken}";
+            }
 
             // Receive the response from the webserver
             var response = await request.GetResponseAsync() as HttpWebResponse;
