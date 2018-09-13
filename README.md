@@ -3,6 +3,10 @@ This library for C# will allow you to easily communicate with the Ring API and r
 
 ## Version History
 
+0.2.2.1 - released Septembet 13, 2018
+
+- Fixed issue when using GetDoorbotHistoryRecording and it not downloading the actual recording. Thanks to Gary Quigley for reporting it!
+
 0.2.2 - released July 2, 2018
 
 - Ring seems to have switched off their old API command support. Updated the methods to use the new API.

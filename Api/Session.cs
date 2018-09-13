@@ -294,7 +294,7 @@ namespace KoenZomers.Ring.Api
                 throw new Exceptions.SessionNotAuthenticatedException();
             }
 
-            var stream = await HttpUtility.DownloadFile(new Uri(RingApiBaseUrl, $"dings/{dingId}/recording?disable_redirect=true"), AuthenticationToken);
+            var stream = await HttpUtility.DownloadFile(new Uri(RingApiBaseUrl, $"dings/{dingId}/recording?disable_redirect=false"), AuthenticationToken);
             return stream;
         }
 
