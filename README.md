@@ -1,4 +1,19 @@
 # Ring API
+[![licence badge]][licence]
+[![stars badge]][stars]
+[![forks badge]][forks]
+[![issues badge]][issues]
+
+[licence badge]:https://img.shields.io/badge/license-MIT-blue.svg
+[stars badge]:https://img.shields.io/github/stars/koenzomers/RingApi.svg
+[forks badge]:https://img.shields.io/github/forks/koenzomers/RingApi.svg
+[issues badge]:https://img.shields.io/github/issues/koenzomers/RingApi.svg
+
+[licence]:https://github.com/koenzomers/RingApi/blob/master/LICENSE.md
+[stars]:https://github.com/koenzomers/RingApi/stargazers
+[forks]:https://github.com/koenzomers/RingApi/network
+[issues]:https://github.com/koenzomers/RingApi/issues
+
 This library for C# will allow you to easily communicate with the Ring API and retrieve details about your Ring doorbells and Ring chimes.
 
 ## Version History
