@@ -94,7 +94,7 @@ namespace KoenZomers.Ring.UnitTest
         }
 
         /// <summary>
-        /// Test if the doorbot history events can be retrieved
+        /// Test if the doorbot history events can be retrieved with the default amount of items
         /// </summary>
         [TestMethod]
         public async Task GetDoorbotsHistoryTest()
@@ -104,6 +104,23 @@ namespace KoenZomers.Ring.UnitTest
 
             var doorbotHistory = await session.GetDoorbotsHistory();
             Assert.IsTrue(doorbotHistory.Count > 0, "No doorbot history items returned");
+            Assert.IsTrue(doorbotHistory.Count == 20, $"{doorbotHistory.Count} doorbot history items returned while 20 were expected");
+        }
+
+        /// <summary>
+        /// Test if the doorbot history events can be retrieved with a specific amount of items
+        /// </summary>
+        [TestMethod]
+        public async Task GetDoorbotsHistoryWithLimitTest()
+        {
+            var limit = 50;
+
+            var session = new Api.Session(Username, Password);
+            await session.Authenticate();
+
+            var doorbotHistory = await session.GetDoorbotsHistory(limit);
+            Assert.IsTrue(doorbotHistory.Count > 0, "No doorbot history items returned");
+            Assert.IsTrue(doorbotHistory.Count == limit, $"{doorbotHistory.Count} doorbot history items returned while {limit} were expected");
         }
 
         /// <summary>

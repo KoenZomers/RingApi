@@ -258,15 +258,16 @@ namespace KoenZomers.Ring.Api
         /// <summary>
         /// Returns all events registered for the doorbots
         /// </summary>
+        /// <param name="limit">Amount of history items to retrieve. If you don't provide this value, Ring will default to returning only the most recent 20 items.</param>
         /// <returns>All events triggered by registered doorbots under the current account</returns>
-        public async Task<List<Entities.DoorbotHistoryEvent>> GetDoorbotsHistory()
+        public async Task<List<Entities.DoorbotHistoryEvent>> GetDoorbotsHistory(int? limit = null)
         {
             if (!IsAuthenticated)
             {
                 throw new Exceptions.SessionNotAuthenticatedException();
             }
 
-            var response = await HttpUtility.GetContents(new Uri(RingApiBaseUrl, $"doorbots/history"), AuthenticationToken);
+            var response = await HttpUtility.GetContents(new Uri(RingApiBaseUrl, $"doorbots/history{(limit.HasValue ? $"?limit={limit}" : "")}"), AuthenticationToken);
 
             var doorbotHistory = JsonConvert.DeserializeObject<List<Entities.DoorbotHistoryEvent>>(response);
             return doorbotHistory;

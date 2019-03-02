@@ -18,6 +18,10 @@ This library for C# compiled against .NET Standard will allow you to easily comm
 
 ## Version History
 
+0.3.0.1 - released March 2, 2019
+
+- Added optional int parameter to GetDoorbotsHistory which allows setting a specific number of history items that should be returned. If you don't provide a number, it will default to the Ring default of the most recent 20 items
+
 0.3.0.0 - released March 2, 2019
 
 - Converted API library into .NET Standard so it can be used on non Windows platforms as well
