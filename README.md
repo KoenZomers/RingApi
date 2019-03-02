@@ -22,6 +22,7 @@ This library for C# compiled against .NET Standard will allow you to easily comm
 
 - Converted API library into .NET Standard so it can be used on non Windows platforms as well
 - Upgraded the Unit Test NuGet Packages so the Unit Tests work again
+- Upgraded to Newtonsoft JSON 12.0.1
 
 0.2.2.1 - released September 13, 2018
 
