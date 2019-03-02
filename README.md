@@ -18,6 +18,11 @@ This library for C# will allow you to easily communicate with the Ring API and r
 
 ## Version History
 
+0.3.0.0 - released March 2, 2019
+
+- Converted API library into .NET Standard so it can be used on non Windows platforms as well
+- Upgraded the Unit Test NuGet Packages so the Unit Tests work again
+
 0.2.2.1 - released Septembet 13, 2018
 
 - Fixed issue when using GetDoorbotHistoryRecording and it not downloading the actual recording. Thanks to Gary Quigley for reporting it!
