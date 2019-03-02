@@ -23,7 +23,7 @@ This library for C# compiled against .NET Standard will allow you to easily comm
 - Converted API library into .NET Standard so it can be used on non Windows platforms as well
 - Upgraded the Unit Test NuGet Packages so the Unit Tests work again
 
-0.2.2.1 - released Septembet 13, 2018
+0.2.2.1 - released September 13, 2018
 
 - Fixed issue when using GetDoorbotHistoryRecording and it not downloading the actual recording. Thanks to Gary Quigley for reporting it!
 
