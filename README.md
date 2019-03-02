@@ -14,7 +14,7 @@
 [forks]:https://github.com/koenzomers/RingApi/network
 [issues]:https://github.com/koenzomers/RingApi/issues
 
-This library for C# will allow you to easily communicate with the Ring API and retrieve details about your Ring doorbells and Ring chimes.
+This library for C# compiled against .NET Standard will allow you to easily communicate with the Ring API and retrieve details about your Ring doorbells and Ring chimes.
 
 ## Version History
 
@@ -49,7 +49,7 @@ This library for C# will allow you to easily communicate with the Ring API and r
 
 ## System Requirements
 
-This API is built using the Microsoft .NET 4.6.2 framework and is fully asynchronous
+This API is built using Microsoft .NET Standard 2.0 and is fully asynchronous
 
 ## Usage Instructions
 
