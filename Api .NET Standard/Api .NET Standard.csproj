@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>KoenZomers.Ring.Api</RootNamespace>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>C:\code\github\RingApi\KoenZomers.Ring.Api.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\KoenZomers.Ring.Api.snk</AssemblyOriginatorKeyFile>
     <AssemblyName>KoenZomers.Ring.Api</AssemblyName>
     <Version>0.3.0.1</Version>
     <Company>Koen Zomers</Company>
