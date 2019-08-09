@@ -43,9 +43,6 @@ namespace KoenZomers.Ring.Api.Entities
         [JsonProperty(PropertyName = "address")]
         public string Address { get; set; }
 
-        //[JsonProperty(PropertyName = "id")]
-        //public Settings settings { get; set; }
-
         [JsonProperty(PropertyName = "features")]
         public DoorbotFeatures Features { get; set; }
 

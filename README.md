@@ -18,6 +18,11 @@ This library for C# compiled against .NET Standard will allow you to easily comm
 
 ## Version History
 
+0.3.2.0 - released August 9, 2019
+
+- Added support for working with Ring Stickup Cams
+- Removed CredentialsEncoded property in Session as it was no longer used and deprecated a few versions back
+
 0.3.1.0 - released August 9, 2019
 
 - Changed the implementation of GetDoorbotsHistory(int limit) so that it will return as many items as you request, instead of just a maximum of 100 items, even if you would provide a higher number. Discussed in [issue #2](https://github.com/KoenZomers/RingApi/issues/2).

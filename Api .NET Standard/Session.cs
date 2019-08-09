@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.IO;
@@ -21,12 +20,6 @@ namespace KoenZomers.Ring.Api
         /// Password to use to connect to the Ring API. Set by providing it in the constructor.
         /// </summary>
         public string Password { get; private set; }
-
-        /// <summary>
-        /// Returns the Base64 Encoded username and password that was used in the authenticate header in the past. Ring no longer uses basic authentication thus this property will be removed in a future update. Do not use this property.
-        /// </summary>
-        [Obsolete("The Ring API no longer uses Basic authentication thus this property will not be used anymore and will be removed in a future update. Update your code to stop using this property.", false)]
-        public string CredentialsEncoded => Convert.ToBase64String(Encoding.UTF8.GetBytes($"{Username}:{Password}"));
 
         /// <summary>
         /// Uri on which OAuth tokens can be requested from Ring
