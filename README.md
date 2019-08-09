@@ -18,6 +18,10 @@ This library for C# compiled against .NET Standard will allow you to easily comm
 
 ## Version History
 
+0.3.1.0 - released August 9, 2019
+
+- Changed the implementation of GetDoorbotsHistory(int limit) so that it will return as many items as you request, instead of just a maximum of 100 items, even if you would provide a higher number. Discussed in [issue #2](https://github.com/KoenZomers/RingApi/issues/2).
+
 0.3.0.1 - released March 2, 2019
 
 - Added optional int parameter to GetDoorbotsHistory which allows setting a specific number of history items that should be returned. If you don't provide a number, it will default to the Ring default of the most recent 20 items

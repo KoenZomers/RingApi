@@ -267,10 +267,42 @@ namespace KoenZomers.Ring.Api
                 throw new Exceptions.SessionNotAuthenticatedException();
             }
 
+            // Receive the first batch
             var response = await HttpUtility.GetContents(new Uri(RingApiBaseUrl, $"doorbots/history{(limit.HasValue ? $"?limit={limit}" : "")}"), AuthenticationToken);
 
+            // Parse the result
             var doorbotHistory = JsonConvert.DeserializeObject<List<Entities.DoorbotHistoryEvent>>(response);
-            return doorbotHistory;
+
+            // If no limit has been specified or the amount of items requested have been returned already, just return whatever has been returned by the API
+            if (!limit.HasValue || doorbotHistory.Count >= limit.Value) return doorbotHistory;
+
+            // Calculate how many items we still need to retrieve after this first batch
+            var remainingItems = limit.Value - doorbotHistory.Count;
+
+            // Create a list to hold all the results
+            var allHistory = new List<Entities.DoorbotHistoryEvent>();
+
+            // Add the first batch to the list with all the results
+            allHistory.AddRange(doorbotHistory);
+
+            do
+            {
+                // Retrieve the next batch
+                response = await HttpUtility.GetContents(new Uri(RingApiBaseUrl, $"doorbots/history?limit={remainingItems}&older_than={allHistory.Last().Id}"), AuthenticationToken);
+
+                // Parse the result
+                doorbotHistory = JsonConvert.DeserializeObject<List<Entities.DoorbotHistoryEvent>>(response);
+
+                // Add this next batch to the list with all the results
+                allHistory.AddRange(doorbotHistory);
+
+                // Calculate how many items we still need to retrieve after this next batch
+                remainingItems = limit.Value - allHistory.Count;
+            }
+            // Keep retrieving next batches until nothing is being returned anymore or we have retrieved the amount of items that were requested through the limit
+            while (doorbotHistory.Count > 0  && remainingItems > 0);
+
+            return allHistory;
         }
 
         /// <summary>

@@ -6,11 +6,15 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\KoenZomers.Ring.Api.snk</AssemblyOriginatorKeyFile>
     <AssemblyName>KoenZomers.Ring.Api</AssemblyName>
-    <Version>0.3.0.1</Version>
+    <Version>0.3.1.0</Version>
     <Company>Koen Zomers</Company>
     <Authors>Koen Zomers</Authors>
     <Description>API in .Net Standard to communicate with the Ring Doorbell service</Description>
     <PackageProjectUrl>https://github.com/KoenZomers/RingApi</PackageProjectUrl>
+    <AssemblyVersion>0.3.1.0</AssemblyVersion>
+    <PackageReleaseNotes>- Changed the implementation of GetDoorbotsHistory(int limit) so that it will return as many items as you request, instead of just a maximum of 100 items, even if you would provide a higher number. Discussed in https://github.com/KoenZomers/RingApi/issues/2.</PackageReleaseNotes>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Copyright>Koen Zomers</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

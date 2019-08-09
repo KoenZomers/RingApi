@@ -113,7 +113,7 @@ namespace KoenZomers.Ring.UnitTest
         [TestMethod]
         public async Task GetDoorbotsHistoryWithLimitTest()
         {
-            var limit = 50;
+            var limit = 250;
 
             var session = new Api.Session(Username, Password);
             await session.Authenticate();
