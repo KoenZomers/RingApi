@@ -6,14 +6,14 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\KoenZomers.Ring.Api.snk</AssemblyOriginatorKeyFile>
     <AssemblyName>KoenZomers.Ring.Api</AssemblyName>
-    <Version>0.3.2.0</Version>
+    <Version>0.3.3.0</Version>
     <Company>Koen Zomers</Company>
     <Authors>Koen Zomers</Authors>
     <Description>API in .Net Standard to communicate with the Ring Doorbell service</Description>
     <PackageProjectUrl>https://github.com/KoenZomers/RingApi</PackageProjectUrl>
-    <AssemblyVersion>0.3.2.0</AssemblyVersion>
-    <PackageReleaseNotes>- Added support for working with Ring Stickup Cams
-- Removed CredentialsEncoded property in Session as it was no longer used and deprecated a few versions back</PackageReleaseNotes>
+    <AssemblyVersion>0.3.3.0</AssemblyVersion>
+    <PackageReleaseNotes>- Further improvements to support Ring Stickup Cams
+- It could be that this version introduces backwards compatibility issues and requires you to update your code. I.e. switching from non nullable types to nullable types. Keep this in mind when upgrading to this version.</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Copyright>Koen Zomers</Copyright>
   </PropertyGroup>

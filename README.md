@@ -18,6 +18,11 @@ This library for C# compiled against .NET Standard will allow you to easily comm
 
 ## Version History
 
+0.3.3.0 - released October 4, 2019
+
+- Further improvements to support Ring Stickup Cams
+- It could be that this version introduces backwards compatibility issues and requires you to update your code. I.e. switching from non nullable types to nullable types. Keep this in mind when upgrading to this version.
+
 0.3.2.0 - released August 9, 2019
 
 - Added support for working with Ring Stickup Cams

@@ -5,6 +5,6 @@ namespace KoenZomers.Ring.Api.Entities
     public class LightSettings
     {
         [JsonProperty("brightness")]
-        public long Brightness { get; set; }
+        public long? Brightness { get; set; }
     }
 }

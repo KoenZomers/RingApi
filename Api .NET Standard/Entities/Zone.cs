@@ -8,7 +8,7 @@ namespace KoenZomers.Ring.Api.Entities
         public string Name { get; set; }
 
         [JsonProperty("state")]
-        public long State { get; set; }
+        public long? State { get; set; }
 
         [JsonProperty("vertex1")]
         public Vertex Vertex1 { get; set; }

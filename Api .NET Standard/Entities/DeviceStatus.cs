@@ -10,7 +10,7 @@ namespace KoenZomers.Ring.Api.Entities
         public partial class Status
         {
             [JsonProperty("seconds_remaining")]
-            public long SecondsRemaining { get; set; }
+            public long? SecondsRemaining { get; set; }
         }
     }
 }

@@ -5,88 +5,88 @@ namespace KoenZomers.Ring.Api.Entities
 {
     public class StickupCam
     {
-        [JsonProperty("id")]
-        public long Id { get; set; }
+        [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
+        public long? Id { get; set; }
 
-        [JsonProperty("description")]
+        [JsonProperty("description", NullValueHandling = NullValueHandling.Ignore)]
         public string Description { get; set; }
 
-        [JsonProperty("device_id")]
+        [JsonProperty("device_id", NullValueHandling = NullValueHandling.Ignore)]
         public string DeviceId { get; set; }
 
-        [JsonProperty("time_zone")]
+        [JsonProperty("time_zone", NullValueHandling = NullValueHandling.Ignore)]
         public string TimeZone { get; set; }
 
-        [JsonProperty("subscribed")]
-        public bool Subscribed { get; set; }
+        [JsonProperty("subscribed", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? Subscribed { get; set; }
 
-        [JsonProperty("subscribed_motions")]
-        public bool SubscribedMotions { get; set; }
+        [JsonProperty("subscribed_motions", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? SubscribedMotions { get; set; }
 
-        [JsonProperty("battery_life")]
-        public long BatteryLife { get; set; }
+        [JsonProperty("battery_life", NullValueHandling = NullValueHandling.Ignore)]
+        public long? BatteryLife { get; set; }
 
-        [JsonProperty("external_connection")]
-        public bool ExternalConnection { get; set; }
+        [JsonProperty("external_connection", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? ExternalConnection { get; set; }
 
-        [JsonProperty("firmware_version")]
+        [JsonProperty("firmware_version", NullValueHandling = NullValueHandling.Ignore)]
         public string FirmwareVersion { get; set; }
 
-        [JsonProperty("kind")]
+        [JsonProperty("kind", NullValueHandling = NullValueHandling.Ignore)]
         public string Kind { get; set; }
 
-        [JsonProperty("latitude")]
-        public long Latitude { get; set; }
+        [JsonProperty("latitude", NullValueHandling = NullValueHandling.Ignore)]
+        public long? Latitude { get; set; }
 
-        [JsonProperty("longitude")]
-        public long Longitude { get; set; }
+        [JsonProperty("longitude", NullValueHandling = NullValueHandling.Ignore)]
+        public long? Longitude { get; set; }
 
-        [JsonProperty("address")]
+        [JsonProperty("address", NullValueHandling = NullValueHandling.Ignore)]
         public string Address { get; set; }
 
-        [JsonProperty("settings")]
+        [JsonProperty("settings", NullValueHandling = NullValueHandling.Ignore)]
         public StickupCamSettings Settings { get; set; }
 
-        [JsonProperty("features")]
+        [JsonProperty("features", NullValueHandling = NullValueHandling.Ignore)]
         public StickupCamFeatures Features { get; set; }
 
-        [JsonProperty("owned")]
-        public bool Owned { get; set; }
+        [JsonProperty("owned", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? Owned { get; set; }
 
-        [JsonProperty("alerts")]
+        [JsonProperty("alerts", NullValueHandling = NullValueHandling.Ignore)]
         public StickupCamAlerts Alerts { get; set; }
 
-        [JsonProperty("motion_snooze")]
-        public object MotionSnooze { get; set; }
+        [JsonProperty("motion_snooze", NullValueHandling = NullValueHandling.Ignore)]
+        public string MotionSnooze { get; set; }
 
-        [JsonProperty("stolen")]
-        public bool Stolen { get; set; }
+        [JsonProperty("stolen", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? Stolen { get; set; }
 
-        [JsonProperty("location_id")]
+        [JsonProperty("location_id", NullValueHandling = NullValueHandling.Ignore)]
         public Guid LocationId { get; set; }
 
-        [JsonProperty("ring_id")]
-        public object RingId { get; set; }
+        [JsonProperty("ring_id", NullValueHandling = NullValueHandling.Ignore)]
+        public string RingId { get; set; }
 
-        [JsonProperty("owner")]
+        [JsonProperty("owner", NullValueHandling = NullValueHandling.Ignore)]
         public Owner Owner { get; set; }
 
-        [JsonProperty("battery_life_2")]
-        public long BatteryLife2 { get; set; }
+        [JsonProperty("battery_life_2", NullValueHandling = NullValueHandling.Ignore)]
+        public long? BatteryLife2 { get; set; }
 
-        [JsonProperty("battery_voltage")]
-        public long BatteryVoltage { get; set; }
+        [JsonProperty("battery_voltage", NullValueHandling = NullValueHandling.Ignore)]
+        public long? BatteryVoltage { get; set; }
 
-        [JsonProperty("battery_voltage_2")]
-        public long BatteryVoltage2 { get; set; }
+        [JsonProperty("battery_voltage_2", NullValueHandling = NullValueHandling.Ignore)]
+        public long? BatteryVoltage2 { get; set; }
 
-        [JsonProperty("led_status")]
+        [JsonProperty("led_status", NullValueHandling = NullValueHandling.Ignore)]
         public DeviceStatus LedStatus { get; set; }
 
-        [JsonProperty("siren_status")]
+        [JsonProperty("siren_status", NullValueHandling = NullValueHandling.Ignore)]
         public DeviceStatus SirenStatus { get; set; }
 
-        [JsonProperty("night_mode")]
-        public long NightMode { get; set; }
+        [JsonProperty("night_mode", NullValueHandling = NullValueHandling.Ignore)]
+        public long? NightMode { get; set; }
     }
 }
