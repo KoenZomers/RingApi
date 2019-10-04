@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{5D8581
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "UnitTest\UnitTest.csproj", "{C3A8D1B4-06FF-46BE-BCFD-F20C8F4820BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api .NET Standard", "Api .NET Standard\Api .NET Standard.csproj", "{94A0712C-E701-49F7-B412-A386D8334D28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api .NET Standard", "Api .NET Standard\Api .NET Standard.csproj", "{94A0712C-E701-49F7-B412-A386D8334D28}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

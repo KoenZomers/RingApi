@@ -366,6 +366,7 @@ namespace KoenZomers.Ring.Api
         /// Saves the recording of the provided Ding Id of a doorbot to the provided location
         /// </summary>
         /// <param name="doorbotHistoryEvent">The doorbot history event to retrieve the recording for</param>
+        /// <param name="saveAs">Full path including the filename where to save the recording</param>
         public async Task GetDoorbotHistoryRecording(Entities.DoorbotHistoryEvent doorbotHistoryEvent, string saveAs)
         {
             await GetDoorbotHistoryRecording(doorbotHistoryEvent.Id, saveAs);
@@ -375,6 +376,7 @@ namespace KoenZomers.Ring.Api
         /// Saves the recording of the provided Ding Id of a doorbot to the provided location
         /// </summary>
         /// <param name="dingId">Id of the doorbot history event to retrieve the recording for</param>
+        /// <param name="saveAs">Full path including the filename where to save the recording</param>
         public async Task GetDoorbotHistoryRecording(string dingId, string saveAs)
         {
             using (var stream = await GetDoorbotHistoryRecording(dingId))
