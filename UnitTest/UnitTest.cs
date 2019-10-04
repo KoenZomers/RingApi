@@ -124,6 +124,22 @@ namespace KoenZomers.Ring.UnitTest
         }
 
         /// <summary>
+        /// Test if the doorbot history events can be retrieved within a specific timeframe
+        /// </summary>
+        [TestMethod]
+        public async Task GetDoorbotsHistoryByDateSpanTest()
+        {
+            var startDate = DateTime.Now.AddDays(-30);
+            var endDate = DateTime.Now.AddDays(-1);
+
+            var session = new Api.Session(Username, Password);
+            await session.Authenticate();
+
+            var doorbotHistory = await session.GetDoorbotsHistory(startDate, endDate);
+            Assert.IsTrue(doorbotHistory.Count > 0, "No doorbot history items returned");
+        }
+
+        /// <summary>
         /// Test if the recording for a doorbot history event can be retrieved
         /// </summary>
         [TestMethod]

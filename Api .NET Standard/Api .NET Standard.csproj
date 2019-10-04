@@ -6,16 +6,16 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\KoenZomers.Ring.Api.snk</AssemblyOriginatorKeyFile>
     <AssemblyName>KoenZomers.Ring.Api</AssemblyName>
-    <Version>0.3.3.0</Version>
+    <Version>0.3.4.0</Version>
     <Company>Koen Zomers</Company>
     <Authors>Koen Zomers</Authors>
     <Description>API in .Net Standard to communicate with the Ring Doorbell service</Description>
     <PackageProjectUrl>https://github.com/KoenZomers/RingApi</PackageProjectUrl>
-    <AssemblyVersion>0.3.3.0</AssemblyVersion>
-    <PackageReleaseNotes>- Further improvements to support Ring Stickup Cams
-- It could be that this version introduces backwards compatibility issues and requires you to update your code. I.e. switching from non nullable types to nullable types. Keep this in mind when upgrading to this version.</PackageReleaseNotes>
+    <AssemblyVersion>0.3.4.0</AssemblyVersion>
+    <PackageReleaseNotes>- Added method `public async Task&lt;List&lt;Entities.DoorbotHistoryEvent&gt;&gt; GetDoorbotsHistory(DateTime startDate, DateTime? endDate)` which allows for retrieving historical items between a specific date/time span. Note though that since the Ring API does not expose this functionality, it relies on retrieving historical items in batches until it has found all that fit within the date/time span, so it's not super efficient, but it works.'</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Copyright>Koen Zomers</Copyright>
+    <FileVersion>0.3.4.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>

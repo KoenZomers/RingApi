@@ -18,6 +18,10 @@ This library for C# compiled against .NET Standard will allow you to easily comm
 
 ## Version History
 
+0.3.4.0 - released October 4, 2019
+
+- Added method `public async Task<List<Entities.DoorbotHistoryEvent>> GetDoorbotsHistory(DateTime startDate, DateTime? endDate)` which allows for retrieving historical items between a specific date/time span. Note though that since the Ring API does not expose this functionality, it relies on retrieving historical items in batches until it has found all that fit within the date/time span, so it's not super efficient, but it works.'
+
 0.3.3.0 - released October 4, 2019
 
 - Further improvements to support Ring Stickup Cams

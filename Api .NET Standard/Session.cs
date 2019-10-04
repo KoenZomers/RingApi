@@ -299,6 +299,44 @@ namespace KoenZomers.Ring.Api
         }
 
         /// <summary>
+        /// Returns all events registered for the doorbots that happened between the provided dates. Notice: Ring does not provide an API which allows for retrieving items between two specific dates. This means that this code will just keep retriving historical items until it has all items that occurred in the provided date span. This is not super efficient, but unfortunately the only way.
+        /// </summary>
+        /// <param name="startDate">Date and time in the past from where to start collecting history</param>
+        /// <param name="endDate">Date and time in the past until where to start collecting history. Provide NULL to get everything up till now.</param>
+        /// <returns>All events triggered by registered doorbots under the current account between the provided dates</returns>
+        public async Task<List<Entities.DoorbotHistoryEvent>> GetDoorbotsHistory(DateTime startDate, DateTime? endDate)
+        {
+            if (!IsAuthenticated)
+            {
+                throw new Exceptions.SessionNotAuthenticatedException();
+            }
+
+            // Amount of items to retrieve in each request
+            const short batchWithItems = 200;
+
+            // Create a list to hold all the results
+            var allHistory = new List<Entities.DoorbotHistoryEvent>();
+
+            var doorbotHistory = new List<Entities.DoorbotHistoryEvent>();
+            do
+            {
+                // Retrieve a batch with historical items
+                var response = await HttpUtility.GetContents(new Uri(RingApiBaseUrl, $"doorbots/history?limit={batchWithItems}{(allHistory.Count == 0 ? "" : "&older_than=" + allHistory.Last().Id)}"), AuthenticationToken);
+
+                // Parse the result
+                doorbotHistory = JsonConvert.DeserializeObject<List<Entities.DoorbotHistoryEvent>>(response);
+
+                // Add this next batch to the list with all the results which fit within the provided date span
+                allHistory.AddRange(doorbotHistory.Where(h => h.CreatedAtDateTime.HasValue && h.CreatedAtDateTime.Value >= startDate && (!endDate.HasValue || h.CreatedAtDateTime.Value <= endDate.Value)));
+
+            }
+            // Keep retrieving next batches until the last item in the retrieved batch does not fit within the request date span anymore
+            while (doorbotHistory[doorbotHistory.Count - 1].CreatedAtDateTime.HasValue && doorbotHistory[doorbotHistory.Count - 1].CreatedAtDateTime.Value > startDate);
+
+            return allHistory;
+        }
+
+        /// <summary>
         /// Returns a stream with the recording of the provided Ding Id of a doorbot
         /// </summary>
         /// <param name="doorbotHistoryEvent">The doorbot history event to retrieve the recording for</param>
