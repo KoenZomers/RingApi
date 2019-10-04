@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Configuration;
 using System.Threading.Tasks;
 using System.IO;
+using System.Linq;
 
 namespace KoenZomers.Ring.UnitTest
 {
@@ -137,6 +138,7 @@ namespace KoenZomers.Ring.UnitTest
 
             var doorbotHistory = await session.GetDoorbotsHistory(startDate, endDate);
             Assert.IsTrue(doorbotHistory.Count > 0, "No doorbot history items returned");
+            Assert.AreEqual(0, doorbotHistory.Count(h => !h.CreatedAtDateTime.HasValue || (h.CreatedAtDateTime.Value > endDate && h.CreatedAtDateTime.Value < startDate)), "Doorbot history items have been returned which don't fall within the provided period");
         }
 
         /// <summary>
