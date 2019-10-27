@@ -189,7 +189,12 @@ namespace KoenZomers.Ring.Api
         }
 
         /// <summary>
-        /// Authenticates to the Ring API
+        /// Authenticates to the Ring API using the refresh token in the current session
+        /// </summary>
+        public async Task RefreshSession() => await RefreshSession(OAuthToken.RefreshToken);
+
+        /// <summary>
+        /// Authenticates to the Ring API using the provided refresh token
         /// </summary>
         /// <param name="refreshToken">RefreshToken to set up a new authenticated session</param>
         public async Task RefreshSession(string refreshToken)
@@ -232,15 +237,41 @@ namespace KoenZomers.Ring.Api
         }
 
         /// <summary>
+        /// Ensure that the current session is authenticated and check if the access token is still valid. If not, it will try to renew the session using the refresh token.
+        /// </summary>
+        public async Task EnsureSessionValid()
+        {
+            // Ensure the session is authenticated
+            if (!IsAuthenticated)
+            {
+                // Session is not authenticated
+                throw new Exceptions.SessionNotAuthenticatedException();
+            }
+
+            // Ensure the access token in the session is still valid
+            if(OAuthToken.ExpiresAt < DateTime.Now)
+            {
+                // Access token is no longer valid, check if we have a refresh token available to refresh the session
+                if(string.IsNullOrEmpty(OAuthToken.RefreshToken))
+                {
+                    // No refresh token available so can't renew the session
+                    throw new Exceptions.SessionNotAuthenticatedException();
+                }
+
+                // Refresh token available, try refreshing the session
+                await RefreshSession();
+            }
+            
+            // All good
+        }
+
+        /// <summary>
         /// Returns all devices registered with Ring under the current account being used
         /// </summary>
         /// <returns>Devices registered with Ring under the current account</returns>
         public async Task<Entities.Devices> GetRingDevices()
         {
-            if(!IsAuthenticated)
-            {
-                throw new Exceptions.SessionNotAuthenticatedException();
-            }
+            await EnsureSessionValid();
 
             var response = await HttpUtility.GetContents(new Uri(RingApiBaseUrl, $"ring_devices"), AuthenticationToken);
             
@@ -255,10 +286,7 @@ namespace KoenZomers.Ring.Api
         /// <returns>All events triggered by registered doorbots under the current account</returns>
         public async Task<List<Entities.DoorbotHistoryEvent>> GetDoorbotsHistory(int? limit = null)
         {
-            if (!IsAuthenticated)
-            {
-                throw new Exceptions.SessionNotAuthenticatedException();
-            }
+            await EnsureSessionValid();
 
             // Receive the first batch
             var response = await HttpUtility.GetContents(new Uri(RingApiBaseUrl, $"doorbots/history{(limit.HasValue ? $"?limit={limit}" : "")}"), AuthenticationToken);
@@ -306,10 +334,7 @@ namespace KoenZomers.Ring.Api
         /// <returns>All events triggered by registered doorbots under the current account between the provided dates</returns>
         public async Task<List<Entities.DoorbotHistoryEvent>> GetDoorbotsHistory(DateTime startDate, DateTime? endDate)
         {
-            if (!IsAuthenticated)
-            {
-                throw new Exceptions.SessionNotAuthenticatedException();
-            }
+            await EnsureSessionValid();
 
             // Amount of items to retrieve in each request
             const short batchWithItems = 200;
@@ -353,10 +378,7 @@ namespace KoenZomers.Ring.Api
         /// <returns>Stream containing contents of the recording</returns>
         public async Task<Stream> GetDoorbotHistoryRecording(string dingId)
         {
-            if (!IsAuthenticated)
-            {
-                throw new Exceptions.SessionNotAuthenticatedException();
-            }
+            await EnsureSessionValid();
 
             var stream = await HttpUtility.DownloadFile(new Uri(RingApiBaseUrl, $"dings/{dingId}/recording?disable_redirect=false"), AuthenticationToken);
             return stream;
@@ -379,6 +401,8 @@ namespace KoenZomers.Ring.Api
         /// <param name="saveAs">Full path including the filename where to save the recording</param>
         public async Task GetDoorbotHistoryRecording(string dingId, string saveAs)
         {
+            await EnsureSessionValid();
+
             using (var stream = await GetDoorbotHistoryRecording(dingId))
             {
                 using (var fileStream = File.Create(saveAs))

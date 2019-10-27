@@ -20,6 +20,11 @@ If you're just looking for a tool to download your Ring recordings, [go here ins
 
 ## Version History
 
+0.3.5.0 - released October 27, 2019
+
+- Added method `public async Task RefreshSession()` which will try to renew the session based on the refresh token in the session
+- Added method `public async Task EnsureSessionValid()` which validates if the current session is still valid and renews it if it isn't anymore. This method is called inside every method that retrieves data from the Ring service so you should not have to call this method yourself.
+
 0.3.4.0 - released October 4, 2019
 
 - Added method `public async Task<List<Entities.DoorbotHistoryEvent>> GetDoorbotsHistory(DateTime startDate, DateTime? endDate)` which allows for retrieving historical items between a specific date/time span. Note though that since the Ring API does not expose this functionality, it relies on retrieving historical items in batches until it has found all that fit within the date/time span, so it's not super efficient, but it works.'
