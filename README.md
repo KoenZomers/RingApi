@@ -142,7 +142,7 @@ Package statistics: https://www.nuget.org/packages/KoenZomers.Ring.Api
 
 With this API at its current state you can:
 
-- Authenticate to the Ring API
+- Authenticate to the Ring API with or without two factor authentication
 - Retrieve all registered Ring devices (Rings and Chimes) under your account
 - Retrieve the event history of your Ring devices
 - Download the movie recording of the event of your Ring devices
