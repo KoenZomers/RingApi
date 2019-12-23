@@ -12,9 +12,7 @@
     <Description>API in .Net Standard to communicate with the Ring Doorbell service</Description>
     <PackageProjectUrl>https://github.com/KoenZomers/RingApi</PackageProjectUrl>
     <AssemblyVersion>0.4.0.0</AssemblyVersion>
-    <PackageReleaseNotes>- Added method `public async Task RefreshSession()` which will try to renew the session based on the refresh token in the session
-- Added method `public async Task EnsureSessionValid()` which validates if the current session is still valid and renews it if it isn't anymore. This method is called inside every method that retrieves data from the Ring service so you should not have to call this method yourself.
-</PackageReleaseNotes>
+    <PackageReleaseNotes>- Added support for Multi Factor Authentication on Ring accounts. To trigger receiving the text message from Ring with the token, call `session.Authenticate()` first. Then once you have received the token, call `session.Authenticate(twoFactorAuthCode: "12345")` where you replace 12345 with the token you received. Once this returns the access token, you can use this access token to access the Ring API without any further multi factor authentication requirements anymore.</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Copyright>Koen Zomers</Copyright>
     <FileVersion>0.4.0.0</FileVersion>
