@@ -15,6 +15,12 @@ namespace KoenZomers.Ring.Api.Entities
         public List<Doorbot> Doorbots { get; set; }
 
         /// <summary>
+        /// All Authorized Ring doorbots
+        /// </summary>
+        [JsonProperty(PropertyName = "authorized_doorbots")]
+        public List<Doorbot> AuthorizedDoorbots { get; set; }
+
+        /// <summary>
         /// All Ring chimes
         /// </summary>
         [JsonProperty(PropertyName = "chimes")]
