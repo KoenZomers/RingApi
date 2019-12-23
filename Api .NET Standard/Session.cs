@@ -138,8 +138,8 @@ namespace KoenZomers.Ring.Api
             var oAuthformFields = new Dictionary<string, string>
             {
                 { "grant_type", "password" },
-                { "username", Username },
-                { "password", Password },
+                { "username", System.Net.WebUtility.UrlEncode(Username) },
+                { "password", System.Net.WebUtility.UrlEncode(Password) },
                 { "client_id", "RingWindows" },
                 { "scope", "client" }
             };
@@ -165,21 +165,21 @@ namespace KoenZomers.Ring.Api
             // Construct the Form POST fields to send along with the session request
             var sessionFormFields = new Dictionary<string, string>
             {
-                { "device[os]", operatingSystem },
-                { "device[hardware_id]", hardwareId }
+                { "device[os]", System.Net.WebUtility.UrlEncode(operatingSystem) },
+                { "device[hardware_id]", System.Net.WebUtility.UrlEncode(hardwareId) }
             };
 
             // Add optional fields if they have been provided
-            if (!string.IsNullOrEmpty(appBrand)) sessionFormFields.Add("device[app_brand]", appBrand);
-            if (!string.IsNullOrEmpty(deviceModel)) sessionFormFields.Add("device[metadata][device_model]", deviceModel);
-            if (!string.IsNullOrEmpty(deviceName)) sessionFormFields.Add("device[metadata][device_name]", deviceName);
-            if (!string.IsNullOrEmpty(resolution)) sessionFormFields.Add("device[metadata][resolution]", resolution);
-            if (!string.IsNullOrEmpty(appVersion)) sessionFormFields.Add("device[metadata][app_version]", appVersion);
+            if (!string.IsNullOrEmpty(appBrand)) sessionFormFields.Add("device[app_brand]", System.Net.WebUtility.UrlEncode(appBrand));
+            if (!string.IsNullOrEmpty(deviceModel)) sessionFormFields.Add("device[metadata][device_model]", System.Net.WebUtility.UrlEncode(deviceModel));
+            if (!string.IsNullOrEmpty(deviceName)) sessionFormFields.Add("device[metadata][device_name]", System.Net.WebUtility.UrlEncode(deviceName));
+            if (!string.IsNullOrEmpty(resolution)) sessionFormFields.Add("device[metadata][resolution]", System.Net.WebUtility.UrlEncode(resolution));
+            if (!string.IsNullOrEmpty(appVersion)) sessionFormFields.Add("device[metadata][app_version]", System.Net.WebUtility.UrlEncode(appVersion));
             if (appInstallationDate.HasValue) sessionFormFields.Add("device[metadata][app_instalation_date]", string.Format("{0:yyyy-MM-dd}+{0:HH}%3A{0:mm}%3A{0:ss}Z", appInstallationDate.Value));
-            if (!string.IsNullOrEmpty(manufacturer)) sessionFormFields.Add("device[metadata][manufacturer]", manufacturer);
-            if (!string.IsNullOrEmpty(deviceType)) sessionFormFields.Add("device[metadata][device_type]", deviceType);
-            if (!string.IsNullOrEmpty(architecture)) sessionFormFields.Add("device[metadata][architecture]", architecture);
-            if (!string.IsNullOrEmpty(language)) sessionFormFields.Add("device[metadata][language]", language);
+            if (!string.IsNullOrEmpty(manufacturer)) sessionFormFields.Add("device[metadata][manufacturer]", System.Net.WebUtility.UrlEncode(manufacturer));
+            if (!string.IsNullOrEmpty(deviceType)) sessionFormFields.Add("device[metadata][device_type]", System.Net.WebUtility.UrlEncode(deviceType));
+            if (!string.IsNullOrEmpty(architecture)) sessionFormFields.Add("device[metadata][architecture]", System.Net.WebUtility.UrlEncode(architecture));
+            if (!string.IsNullOrEmpty(language)) sessionFormFields.Add("device[metadata][language]", System.Net.WebUtility.UrlEncode(language));
 
             // Make the Form POST request to authenticate
             var sessionResponse = await HttpUtility.FormPost(   new Uri(RingApiBaseUrl, "session"),
