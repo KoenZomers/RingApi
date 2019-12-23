@@ -53,6 +53,11 @@ namespace KoenZomers.Ring.Api
 
         #region Fields
 
+        /// <summary>
+        /// Json Serializer Settings instance to use for deserializing Ring API responses
+        /// </summary>
+        private JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings { Error = (se, ev) => { ev.ErrorContext.Handled = true; } };
+
         #endregion
 
         #region Constructors
@@ -285,7 +290,7 @@ namespace KoenZomers.Ring.Api
 
             var response = await HttpUtility.GetContents(new Uri(RingApiBaseUrl, $"ring_devices"), AuthenticationToken);
             
-            var devices = JsonConvert.DeserializeObject<Entities.Devices>(response);
+            var devices = JsonConvert.DeserializeObject<Entities.Devices>(response, _jsonSerializerSettings);
             return devices;
         }
 
@@ -302,7 +307,7 @@ namespace KoenZomers.Ring.Api
             var response = await HttpUtility.GetContents(new Uri(RingApiBaseUrl, $"doorbots/history{(limit.HasValue ? $"?limit={limit}" : "")}"), AuthenticationToken);
 
             // Parse the result
-            var doorbotHistory = JsonConvert.DeserializeObject<List<Entities.DoorbotHistoryEvent>>(response);
+            var doorbotHistory = JsonConvert.DeserializeObject<List<Entities.DoorbotHistoryEvent>>(response, _jsonSerializerSettings);
 
             // If no limit has been specified or the amount of items requested have been returned already, just return whatever has been returned by the API
             if (!limit.HasValue || doorbotHistory.Count >= limit.Value) return doorbotHistory;
@@ -322,7 +327,7 @@ namespace KoenZomers.Ring.Api
                 response = await HttpUtility.GetContents(new Uri(RingApiBaseUrl, $"doorbots/history?limit={remainingItems}&older_than={allHistory.Last().Id}"), AuthenticationToken);
 
                 // Parse the result
-                doorbotHistory = JsonConvert.DeserializeObject<List<Entities.DoorbotHistoryEvent>>(response);
+                doorbotHistory = JsonConvert.DeserializeObject<List<Entities.DoorbotHistoryEvent>>(response, _jsonSerializerSettings);
 
                 // Add this next batch to the list with all the results
                 allHistory.AddRange(doorbotHistory);
@@ -359,7 +364,7 @@ namespace KoenZomers.Ring.Api
                 var response = await HttpUtility.GetContents(new Uri(RingApiBaseUrl, $"doorbots/history?limit={batchWithItems}{(allHistory.Count == 0 ? "" : "&older_than=" + allHistory.Last().Id)}"), AuthenticationToken);
 
                 // Parse the result
-                doorbotHistory = JsonConvert.DeserializeObject<List<Entities.DoorbotHistoryEvent>>(response);
+                doorbotHistory = JsonConvert.DeserializeObject<List<Entities.DoorbotHistoryEvent>>(response, _jsonSerializerSettings);
 
                 // Add this next batch to the list with all the results which fit within the provided date span
                 allHistory.AddRange(doorbotHistory.Where(h => h.CreatedAtDateTime.HasValue && h.CreatedAtDateTime.Value >= startDate && (!endDate.HasValue || h.CreatedAtDateTime.Value <= endDate.Value)));

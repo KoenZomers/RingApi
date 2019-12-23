@@ -97,7 +97,7 @@ namespace KoenZomers.Ring.UnitTest
             await session.Authenticate(twoFactorAuthCode: TwoFactorAuthenticationToken);
 
             var devices = await session.GetRingDevices();
-            Assert.IsTrue(devices.Chimes.Count > 0 && devices.Doorbots.Count > 0, "No doorbots and/or chimes returned");
+            Assert.IsTrue(devices.Chimes.Count > 0 || devices.Doorbots.Count > 0 || devices.AuthorizedDoorbots.Count > 0 || devices.StickupCams.Count > 0, "No doorbots, stickup cams and/or chimes returned");
         }
 
         /// <summary>
