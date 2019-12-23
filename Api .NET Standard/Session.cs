@@ -107,7 +107,8 @@ namespace KoenZomers.Ring.Api
         /// <param name="manufacturer">Name of the manufacturer of the product for which this API is being accessed. Defaults to 'unspecified'. Optional field.</param>
         /// <param name="deviceType">Type of device from which this API is being used. Defaults to 'tablet'. Optional field.</param>
         /// <param name="architecture">Architecture of the system from which this API is being used. Defaults to 'x64'. Optional field.</param>
-        /// <param name="language">Language of the app from which this API is being used. Defaults to 'en'. Optional field.</param>        
+        /// <param name="language">Language of the app from which this API is being used. Defaults to 'en'. Optional field.</param>
+        /// <param name="twoFactorAuthCode">The two factor authentication code retrieved through a text message to authenticate to two factor authentication enabled accounts. Leave this NULL at first to retrieve the text message. Then use this method again specifying the proper number received in the text message to finalize authentication.</param>
         /// <returns>Session object if the authentication was successful</returns>
         public async Task<Entities.Session> Authenticate(   string operatingSystem = "windows", 
                                                             string hardwareId = "unspecified", 
@@ -120,7 +121,8 @@ namespace KoenZomers.Ring.Api
                                                             string manufacturer = "unspecified",
                                                             string deviceType = "tablet",
                                                             string architecture = "x64",
-                                                            string language = "en")
+                                                            string language = "en",
+                                                            string twoFactorAuthCode = null)
         {
             // Check for mandatory parameters
             if (string.IsNullOrEmpty(operatingSystem))
@@ -142,10 +144,18 @@ namespace KoenZomers.Ring.Api
                 { "scope", "client" }
             };
 
+            // If a two factor auth code has been provided, add the code through the HTTP POST header
+            var headerFields = new System.Collections.Specialized.NameValueCollection();
+            if (twoFactorAuthCode != null)
+            {
+                headerFields.Add("2fa-support", "true");
+                headerFields.Add("2fa-code", twoFactorAuthCode);
+            }
+
             // Make the Form POST request to request an OAuth Token
             var oAuthResponse = await HttpUtility.FormPost( RingApiOAuthUrl,
                                                             oAuthformFields,
-                                                            null,
+                                                            headerFields,
                                                             null);
 
 
