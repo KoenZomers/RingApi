@@ -21,6 +21,11 @@ namespace KoenZomers.Ring.UnitTest
         public string Password => ConfigurationManager.AppSettings["RingPassword"];
 
         /// <summary>
+        /// Two factor authentication token to use to connect to the Ring API
+        /// </summary>
+        public string TwoFactorAuthenticationToken => ConfigurationManager.AppSettings["TwoFactorAuthenticationToken"];
+
+        /// <summary>
         /// Test the scenario where the authentication should succeed
         /// </summary>
         [TestMethod]
@@ -28,8 +33,20 @@ namespace KoenZomers.Ring.UnitTest
         {
             var session = new Api.Session(Username, Password);
 
-            var authResult = await session.Authenticate();
-            Assert.IsFalse(string.IsNullOrEmpty(authResult.Profile.AuthenticationToken), "Failed to authenticate");
+            Api.Entities.Session authResult = null;
+            try
+            {
+                authResult = await session.Authenticate(twoFactorAuthCode: TwoFactorAuthenticationToken);
+            }
+            catch(Api.Exceptions.TwoFactorAuthenticationRequiredException)
+            {
+                Assert.Fail("Ring account requires two factor authentication. Add the token received through text message to the config file as 'TwoFactorAuthenticationToken' and run the test again.");
+            }
+            catch (Api.Exceptions.TwoFactorAuthenticationIncorrectException)
+            {
+                Assert.Fail("The two factor authentication token provided in the config file as 'TwoFactorAuthenticationToken' is invalid or has expired.");
+            }
+            Assert.IsFalse(authResult == null || string.IsNullOrEmpty(authResult.Profile.AuthenticationToken), "Failed to authenticate");
         }
 
         /// <summary>
@@ -52,7 +69,7 @@ namespace KoenZomers.Ring.UnitTest
         {
             // Authenticate normally the first time in order to get a refresh token to test
             var session = new Api.Session(Username, Password);
-            await session.Authenticate();
+            await session.Authenticate(twoFactorAuthCode: TwoFactorAuthenticationToken);
 
             // Request a new authenticated session based on the RefreshToken
             var refreshedSession = await Api.Session.GetSessionByRefreshToken(session.OAuthToken.RefreshToken);
@@ -77,7 +94,7 @@ namespace KoenZomers.Ring.UnitTest
         public async Task GetDevicesTest()
         {
             var session = new Api.Session(Username, Password);
-            await session.Authenticate();
+            await session.Authenticate(twoFactorAuthCode: TwoFactorAuthenticationToken);
 
             var devices = await session.GetRingDevices();
             Assert.IsTrue(devices.Chimes.Count > 0 && devices.Doorbots.Count > 0, "No doorbots and/or chimes returned");
@@ -101,7 +118,7 @@ namespace KoenZomers.Ring.UnitTest
         public async Task GetDoorbotsHistoryTest()
         {
             var session = new Api.Session(Username, Password);
-            await session.Authenticate();
+            await session.Authenticate(twoFactorAuthCode: TwoFactorAuthenticationToken);
 
             var doorbotHistory = await session.GetDoorbotsHistory();
             Assert.IsTrue(doorbotHistory.Count > 0, "No doorbot history items returned");
@@ -117,7 +134,7 @@ namespace KoenZomers.Ring.UnitTest
             var limit = 250;
 
             var session = new Api.Session(Username, Password);
-            await session.Authenticate();
+            await session.Authenticate(twoFactorAuthCode: TwoFactorAuthenticationToken);
 
             var doorbotHistory = await session.GetDoorbotsHistory(limit);
             Assert.IsTrue(doorbotHistory.Count > 0, "No doorbot history items returned");
@@ -134,7 +151,7 @@ namespace KoenZomers.Ring.UnitTest
             var endDate = DateTime.Now.AddDays(-1);
 
             var session = new Api.Session(Username, Password);
-            await session.Authenticate();
+            await session.Authenticate(twoFactorAuthCode: TwoFactorAuthenticationToken);
 
             var doorbotHistory = await session.GetDoorbotsHistory(startDate, endDate);
             Assert.IsTrue(doorbotHistory.Count > 0, "No doorbot history items returned");
@@ -148,7 +165,7 @@ namespace KoenZomers.Ring.UnitTest
         public async Task GetDoorbotsHistoryRecordingByIdTest()
         {
             var session = new Api.Session(Username, Password);
-            await session.Authenticate();
+            await session.Authenticate(twoFactorAuthCode: TwoFactorAuthenticationToken);
 
             var doorbotHistory = await session.GetDoorbotsHistory();
 
@@ -168,7 +185,7 @@ namespace KoenZomers.Ring.UnitTest
         public async Task GetDoorbotsHistoryRecordingByInstanceTest()
         {
             var session = new Api.Session(Username, Password);
-            await session.Authenticate();
+            await session.Authenticate(twoFactorAuthCode: TwoFactorAuthenticationToken);
 
             var doorbotHistory = await session.GetDoorbotsHistory();
 

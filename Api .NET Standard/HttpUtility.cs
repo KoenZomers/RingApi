@@ -124,6 +124,17 @@ namespace KoenZomers.Ring.Api
                     throw new Exceptions.ThrottledException(e);
                 }
 
+                // Check if two factor authentication is enabled by checking for the response: "The remote server returned an error: (412) Precondition Failed."
+                if (e.Message.IndexOf("Precondition Failed", StringComparison.InvariantCultureIgnoreCase) >= 0)
+                {
+                    throw new Exceptions.TwoFactorAuthenticationRequiredException(e);
+                }
+
+                // Check if the two factor authentication token was incorrect or has expired. HTTP 400 Bad Request.
+                if (e.Message.IndexOf("Bad Request", StringComparison.InvariantCultureIgnoreCase) >= 0)
+                {
+                    throw new Exceptions.TwoFactorAuthenticationIncorrectException(e);
+                }
                 throw e;
             }
 

@@ -20,6 +20,10 @@ If you're just looking for a tool to download your Ring recordings, [go here ins
 
 ## Version History
 
+0.4.0.0 - released December 23, 2019
+
+- Added support for Multi Factor Authentication on Ring accounts. To trigger receiving the text message from Ring with the token, call `session.Authenticate()` first. Then once you have received the token, call `session.Authenticate(twoFactorAuthCode: "12345")` where you replace 12345 with the token you received. Once this returns the access token, you can use this access token to access the Ring API without any further multi factor authentication requirements anymore.
+
 0.3.5.0 - released October 27, 2019
 
 - Added method `public async Task RefreshSession()` which will try to renew the session based on the refresh token in the session
@@ -100,6 +104,14 @@ Note that this line does not perform any communications with the Ring API yet. Y
 ```C#
 await session.Authenticate();
 ```
+
+If the Ring account you're connecting with has been set up with a two factor authentication requirement, wait for the text message from Ring to arrive on your mobile phone and run Authenticate again providing this code:
+
+```C#
+await session.Authenticate(twoFactorAuthCode: "12345");
+```
+
+If the account does not require two factor authentication, you can skip this step.
 
 Once this succeeds, you can call one of the methods on the session instance to retrieve data, i.e.:
 
