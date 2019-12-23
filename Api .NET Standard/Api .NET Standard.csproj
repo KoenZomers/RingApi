@@ -6,16 +6,16 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\KoenZomers.Ring.Api.snk</AssemblyOriginatorKeyFile>
     <AssemblyName>KoenZomers.Ring.Api</AssemblyName>
-    <Version>0.4.0.1</Version>
+    <Version>0.4.0.2</Version>
     <Company>Koen Zomers</Company>
     <Authors>Koen Zomers</Authors>
     <Description>API in .Net Standard to communicate with the Ring Doorbell service</Description>
     <PackageProjectUrl>https://github.com/KoenZomers/RingApi</PackageProjectUrl>
-    <AssemblyVersion>0.4.0.1</AssemblyVersion>
-    <PackageReleaseNotes>- Fixed issue where having certain special characters such as a + in your e-mail or password used to log on would make the authentication fail. Thanks to [insane4sure](https://github.com/insane4sure) for reporting this in [issue 5](https://github.com/KoenZomers/RingApi/issues/5).</PackageReleaseNotes>
+    <AssemblyVersion>0.4.0.2</AssemblyVersion>
+    <PackageReleaseNotes>- Added support for AuthorizedDoorbots in the devices response from Ring. Thanks to [insane4sure](https://github.com/insane4sure) for reporting this in [issue 6](https://github.com/KoenZomers/RingApi/issues/6).</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Copyright>Koen Zomers</Copyright>
-    <FileVersion>0.4.0.1</FileVersion>
+    <FileVersion>0.4.0.2</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
