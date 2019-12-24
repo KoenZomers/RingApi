@@ -187,7 +187,7 @@ namespace KoenZomers.Ring.UnitTest
             var session = new Api.Session(Username, Password);
             await session.Authenticate(twoFactorAuthCode: TwoFactorAuthenticationToken);
 
-            var doorbotHistory = await session.GetDoorbotsHistory();
+            var doorbotHistory = await session.GetDoorbotsHistory(limit: 1);
 
             Assert.IsTrue(doorbotHistory.Count > 0, "No doorbot history events were found");
 
@@ -196,6 +196,22 @@ namespace KoenZomers.Ring.UnitTest
             await session.GetDoorbotHistoryRecording(doorbotHistory[0], tempFilePath);
 
             File.Delete(tempFilePath);
+        }
+
+        /// <summary>
+        /// Test if the recording for a doorbot history event can be shared
+        /// </summary>
+        [TestMethod]
+        public async Task ShareRecordingTest()
+        {
+            var session = new Api.Session(Username, Password);
+            await session.Authenticate(twoFactorAuthCode: TwoFactorAuthenticationToken);
+
+            var doorbotHistory = await session.GetDoorbotsHistory(limit: 1);
+
+            Assert.IsTrue(doorbotHistory.Count > 0, "No doorbot history events were found");
+
+            await session.ShareRecording(doorbotHistory[0]);
         }
     }
 }

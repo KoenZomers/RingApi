@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.IO;
+using System.Threading;
 
 namespace KoenZomers.Ring.Api
 {
@@ -395,9 +396,40 @@ namespace KoenZomers.Ring.Api
         {
             await EnsureSessionValid();
 
-            var stream = await HttpUtility.DownloadFile(new Uri(RingApiBaseUrl, $"dings/{dingId}/recording?disable_redirect=false"), AuthenticationToken);
+            // Construct the URL where to request downloading of a recording
+            var downloadRequestUri = new Uri(RingApiBaseUrl, $"dings/{dingId}/share/download?disable_redirect=true");
+
+            Entities.DownloadRecording downloadResult = null;
+            for(var downloadAttempt = 1; downloadAttempt < 60; downloadAttempt++)
+            {
+                // Request to download the recording
+                var response = await HttpUtility.GetContents(downloadRequestUri, AuthenticationToken);
+
+                // Parse the result
+                downloadResult = JsonConvert.DeserializeObject<Entities.DownloadRecording>(response);
+
+                // If the Ring API returns an empty URL property, it means its still preparing the download on the server side. Just keep requesting the recording until it returns an URL.
+                if(!string.IsNullOrWhiteSpace(downloadResult.Url))
+                {
+                    // URL returned is not empty, start the download from the returned URL
+                    break;
+                }
+
+                // Wait one second before requesting the recording again
+                Thread.Sleep(TimeSpan.FromSeconds(2));
+            }
+
+            // Ensure we ended with a valid URL to download the recording from
+            if(downloadResult == null || string.IsNullOrWhiteSpace(downloadResult.Url) || !Uri.TryCreate(downloadResult.Url, UriKind.Absolute, out Uri downloadUri))
+            {
+                throw new Exceptions.DownloadFailedException(downloadResult.Url);
+            }
+
+            // Request the file download from the returned URI
+            var stream = await HttpUtility.DownloadFile(downloadUri);
             return stream;
         }
+
 
         /// <summary>
         /// Saves the recording of the provided Ding Id of a doorbot to the provided location
@@ -425,6 +457,57 @@ namespace KoenZomers.Ring.Api
                     await stream.CopyToAsync(fileStream);
                 }
             }
+        }
+
+        /// <summary>
+        /// Shares the Ring recording with the provided identifier and returns the shared URL to it
+        /// </summary>
+        /// <param name="historyEvent">The doorbot history event to share the recording of</param>
+        /// <returns>Uri to the shared recording</returns>
+        public async Task<Uri> ShareRecording(Entities.DoorbotHistoryEvent historyEvent)
+        {
+            return await ShareRecording(historyEvent.Id);
+        }
+
+        /// <summary>
+        /// Shares the Ring recording with the provided identifier and returns the shared URL to it
+        /// </summary>
+        /// <param name="recordingId">Id of the recording</param>
+        /// <returns>Uri to the shared recording</returns>
+        public async Task<Uri> ShareRecording(string recordingId)
+        {
+            await EnsureSessionValid();
+
+            // Construct the URL where to request sharing of a recording
+            var downloadRequestUri = new Uri(RingApiBaseUrl, $"dings/{recordingId}/share/share?disable_redirect=true");
+
+            Entities.SharedRecording shareResult = null;
+            for (var downloadAttempt = 1; downloadAttempt < 60; downloadAttempt++)
+            {
+                // Request to share the recording
+                var response = await HttpUtility.GetContents(downloadRequestUri, AuthenticationToken);
+
+                // Parse the result
+                shareResult = JsonConvert.DeserializeObject<Entities.SharedRecording>(response);
+
+                // If the Ring API returns an empty URL property, it means its still preparing the sharing on the server side. Just keep requesting the recording until it returns an URL.
+                if (!string.IsNullOrWhiteSpace(shareResult.WrapperUrl))
+                {
+                    // URL returned is not empty, return the URL
+                    break;
+                }
+
+                // Wait one second before requesting the sharing again
+                Thread.Sleep(TimeSpan.FromSeconds(2));
+            }
+
+            // Ensure we ended with a valid URL to the shared recording
+            if (shareResult == null || string.IsNullOrWhiteSpace(shareResult.WrapperUrl) || !Uri.TryCreate(shareResult.WrapperUrl, UriKind.Absolute, out Uri shareUri))
+            {
+                throw new Exceptions.SharingFailedException(recordingId);
+            }
+
+            return shareUri;
         }
 
         #endregion

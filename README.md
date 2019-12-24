@@ -20,6 +20,11 @@ If you're just looking for a tool to download your Ring recordings, [go here ins
 
 ## Version History
 
+0.4.1.0 - released December 24, 2019
+
+- Updated method for downloading of recordings which is also used by the native Ring apps and seems more stable
+- Added new option `session.ShareRecording()` to share a recording and get returned the unique URL from which it can be downloaded by anyone if in their posession
+
 0.4.0.3 - released December 24, 2019
 
 - Changed to less strict JSON result parsing as it turns out that the API responses may differ quite a bit between users. To avoid the slightest change not making possible to use the returned results, I followed [insane4sure](https://github.com/insane4sure)'s recommendation in [issue 4](https://github.com/KoenZomers/RingApi/issues/4) and applied this to all responses except for the authentication part.
@@ -138,6 +143,12 @@ To save a recording directly to your disk:
 await session.GetDoorbotHistoryRecording("6000000004618901011", "c:\\temp\\recording.mp4");
 ```
 
+To share a recording:
+
+```C#
+await session.ShareRecording("6000000004618901011");
+```
+
 ### Unit Tests
 
 Check out the UnitTest project in this solution for full insight in the possibilities and working code samples. If you want to run the Unit Tests, just copy the App.sample.config file in the UnitTest project to App.config and fill in your Ring username and password and you're good to go to run all tests. They will not make any changes to your Ring devices or Ring profile, just retrieve information, so you can run it without any risk.
@@ -158,7 +169,8 @@ With this API at its current state you can:
 - Retrieve all registered Ring devices (Rings and Chimes) under your account
 - Retrieve the event history of your Ring devices
 - Download the movie recording of the event of your Ring devices
+- Share a recorded event
 
 ## Feedback
 
-Any kind of feedback is welcome! Feel free to drop me an e-mail at mail@koenzomers.nl
+Any kind of feedback is welcome! Feel free to drop me an e-mail at koen@zomers.eu or [create an issue](https://github.com/KoenZomers/RingApi/issues)
