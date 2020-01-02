@@ -213,5 +213,60 @@ namespace KoenZomers.Ring.UnitTest
 
             await session.ShareRecording(doorbotHistory[0]);
         }
+
+        /// <summary>
+        /// Test if the latest snapshot from a doorbot can be downloaded
+        /// </summary>
+        [TestMethod]
+        public async Task DownloadLatestSnapshotTest()
+        {
+            var session = new Api.Session(Username, Password);
+            await session.Authenticate(twoFactorAuthCode: TwoFactorAuthenticationToken);
+
+            var devices = await session.GetRingDevices();
+            Assert.IsTrue(devices != null, "Unable to retrieve Ring devices");
+            Assert.IsTrue(devices.AuthorizedDoorbots != null && devices.AuthorizedDoorbots.Count > 0, "Retrieved Ring devices do not contain any doorbots");
+
+            var tempFilePath = Path.GetTempFileName();
+
+            await session.GetLatestSnapshot(devices.AuthorizedDoorbots[0], tempFilePath);
+
+            File.Delete(tempFilePath);
+        }
+
+        /// <summary>
+        /// Test if requesting snapshots to be refreshed succeeds
+        /// </summary>
+        [TestMethod]
+        public async Task UpdateSnapshotTest()
+        {
+            var session = new Api.Session(Username, Password);
+            await session.Authenticate(twoFactorAuthCode: TwoFactorAuthenticationToken);
+
+            var devices = await session.GetRingDevices();
+            Assert.IsTrue(devices != null, "Unable to retrieve Ring devices");
+            Assert.IsTrue(devices.AuthorizedDoorbots != null && devices.AuthorizedDoorbots.Count > 0, "Retrieved Ring devices do not contain any doorbots");
+
+            await session.UpdateSnapshot(devices.AuthorizedDoorbots[0]);
+        }
+
+        /// <summary>
+        /// Test if we can retrieve the date and time at which a snapshot was last taken from a Ring doorbot device
+        /// </summary>
+        [TestMethod]
+        public async Task GetSnapshotTimestampTest()
+        {
+            var session = new Api.Session(Username, Password);
+            await session.Authenticate(twoFactorAuthCode: TwoFactorAuthenticationToken);
+
+            var devices = await session.GetRingDevices();
+            Assert.IsTrue(devices != null, "Unable to retrieve Ring devices");
+            Assert.IsTrue(devices.AuthorizedDoorbots != null && devices.AuthorizedDoorbots.Count > 0, "Retrieved Ring devices do not contain any doorbots");
+
+            var doorbotSnapshotTimestamps = await session.GetDoorbotSnapshotTimestamp(devices.AuthorizedDoorbots[0]);
+
+            Assert.IsTrue(doorbotSnapshotTimestamps.Timestamp.Count > 0, "No timestamps were returned for the doorbot");
+            Assert.IsTrue(doorbotSnapshotTimestamps.Timestamp[0].Timestamp.HasValue, "Unable to define the date and time for the last snapshot of the doorbot");
+        }
     }
 }

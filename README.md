@@ -20,6 +20,12 @@ If you're just looking for a tool to download your Ring recordings, [go here ins
 
 ## Version History
 
+0.4.2.0 - released January 2, 2020
+
+- Added method `GetLatestSnapshot` to retrieve a snapshot from a doorbot
+- Added method `UpdateSnapshot` to force refreshing a snapshot from a doorbot
+- Added method `GetDoorbotSnapshotTimestamp` to retrieve the date and time at which the last snapshot was taken from a doorbot
+
 0.4.1.0 - released December 24, 2019
 
 - Updated method for downloading of recordings which is also used by the native Ring apps and seems more stable
@@ -149,6 +155,24 @@ To share a recording:
 await session.ShareRecording("6000000004618901011");
 ```
 
+To retrieve the latest available snapshot from a doorbot and save it to disk:
+
+```C#
+await session.GetLatestSnapshot(1111111, "c:\\temp\\snapshot.jpg");
+```
+
+To force a new snapshot to be taken from a doorbot:
+
+```C#
+await session.UpdateSnapshot(1111111);
+```
+
+To retrieve the date and time at which the last snapshot was taken from a doorbot:
+
+```C#
+var timestamps = await session.GetDoorbotSnapshotTimestamp(1111111);
+```
+
 ### Unit Tests
 
 Check out the UnitTest project in this solution for full insight in the possibilities and working code samples. If you want to run the Unit Tests, just copy the App.sample.config file in the UnitTest project to App.config and fill in your Ring username and password and you're good to go to run all tests. They will not make any changes to your Ring devices or Ring profile, just retrieve information, so you can run it without any risk.
@@ -170,6 +194,7 @@ With this API at its current state you can:
 - Retrieve the event history of your Ring devices
 - Download the movie recording of the event of your Ring devices
 - Share a recorded event
+- Download and refresh the latest snapshot from a Ring doorbell
 
 ## Feedback
 

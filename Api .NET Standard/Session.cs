@@ -510,6 +510,119 @@ namespace KoenZomers.Ring.Api
             return shareUri;
         }
 
+        /// <summary>
+        /// Saves the latest available snapshot from the provided doorbot to the provided location
+        /// </summary>
+        /// <param name="doorbot">The doorbot to retrieve the latest available snapshot from</param>
+        /// <param name="saveAs">Full path including the filename where to save the snapshot</param>
+        public async Task GetLatestSnapshot(Entities.Doorbot doorbot, string saveAs)
+        {
+            await GetLatestSnapshot(doorbot.Id, saveAs);
+        }
+
+
+        /// <summary>
+        /// Saves the latest available snapshot from the provided doorbot to the provided location
+        /// </summary>
+        /// <param name="doorbotId">ID of the doorbot to retrieve the latest available snapshot from</param>
+        /// <param name="saveAs">Full path including the filename where to save the snapshot</param>
+        public async Task GetLatestSnapshot(int doorbotId, string saveAs)
+        {
+            using (var stream = await GetLatestSnapshot(doorbotId))
+            {
+                using (var fileStream = File.Create(saveAs))
+                {
+                    await stream.CopyToAsync(fileStream);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns the latest available snapshot from the provided doorbot
+        /// </summary>
+        /// <param name="doorbot">The doorbot to retrieve the latest available snapshot from</param>
+        /// <returns>Stream with the latest snapshot from the doorbot</returns>
+        public async Task<Stream> GetLatestSnapshot(Entities.Doorbot doorbot)
+        {
+            return await GetLatestSnapshot(doorbot.Id);
+        }
+
+        /// <summary>
+        /// Returns the latest available snapshot from the provided doorbot
+        /// </summary>
+        /// <param name="doorbotId">ID of the doorbot to retrieve the latest available snapshot from</param>
+        /// <returns>Stream with the latest snapshot from the doorbot</returns>
+        public async Task<Stream> GetLatestSnapshot(int doorbotId)
+        {
+            await EnsureSessionValid();
+
+            // Construct the URL where to download the latest doorbot snapshot from
+            var downloadSnapshotUri = new Uri(RingApiBaseUrl, $"snapshots/image/{doorbotId}");
+
+            // Request the snapshot
+            var stream = await HttpUtility.DownloadFile(downloadSnapshotUri, AuthenticationToken);
+            return stream;
+        }
+
+        /// <summary>
+        /// Requests the Ring API to get a fresh snapshot from the provided doorbot
+        /// </summary>
+        /// <param name="doorbotId">ID of the doorbot to request a fresh snapshot from</param>
+        /// <exception cref="Exceptions.UnexpectedOutcomeException">Thrown if the actual HTTP response is different from what was expected</exception>
+        public async Task UpdateSnapshot(Entities.Doorbot doorbot)
+        {
+            await UpdateSnapshot(doorbot.Id);
+        }
+
+        /// <summary>
+        /// Requests the Ring API to get a fresh snapshot from the provided doorbot
+        /// </summary>
+        /// <param name="doorbotId">ID of the doorbot to request a fresh snapshot from</param>
+        /// <exception cref="Exceptions.UnexpectedOutcomeException">Thrown if the actual HTTP response is different from what was expected</exception>
+        public async Task UpdateSnapshot(int doorbotId)
+        {
+            await EnsureSessionValid();
+
+            // Construct the URL which will trigger the Ring API to refresh the snapshots
+            var updateSnapshotUri = new Uri(RingApiBaseUrl, "snapshots/update_all");
+
+            // Construct the body of the message
+            var bodyContent = string.Concat(@"{ ""doorbot_ids"": [", doorbotId, @"], ""refresh"": true }");
+
+            // Send the request
+            await HttpUtility.SendRequestWithExpectedStatusOutcome(updateSnapshotUri, System.Net.Http.HttpMethod.Put, System.Net.HttpStatusCode.NoContent, bodyContent, AuthenticationToken);
+        }
+
+        /// <summary>
+        /// Request the date and time when the last snapshot was taken from the provided doorbot
+        /// </summary>
+        /// <param name="doorbot">The doorbot to request when the last snapshot was taken from</param>
+        /// <returns>Entity with information regarding the last taken snapshot</returns>
+        public async Task<Entities.DoorbotTimestamps> GetDoorbotSnapshotTimestamp(Entities.Doorbot doorbot)
+        {
+            return await GetDoorbotSnapshotTimestamp(doorbot.Id);
+        }
+
+        /// <summary>
+        /// Request the date and time when the last snapshot was taken from the provided doorbot
+        /// </summary>
+        /// <param name="doorbotId">ID of the doorbot to request when the last snapshot was taken from</param>
+        /// <returns>Entity with information regarding the last taken snapshot</returns>
+        public async Task<Entities.DoorbotTimestamps> GetDoorbotSnapshotTimestamp(int doorbotId)
+        {
+            await EnsureSessionValid();
+
+            // Construct the URL which will request the timestamps of the latest snapshots
+            var updateSnapshotUri = new Uri(RingApiBaseUrl, "snapshots/timestamps");
+
+            // Construct the body of the message
+            var bodyContent = string.Concat(@"{ ""doorbot_ids"": [", doorbotId, @"]}");
+
+            // Send the request
+            var doorbotTimestamps = await HttpUtility.SendRequest<Entities.DoorbotTimestamps>(updateSnapshotUri, System.Net.Http.HttpMethod.Post, bodyContent, AuthenticationToken);
+            return doorbotTimestamps;
+        }
+
         #endregion
     }
 }

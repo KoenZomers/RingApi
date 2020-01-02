@@ -5,6 +5,9 @@ using System.Text;
 using System.Collections.Specialized;
 using System;
 using System.Threading.Tasks;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using Newtonsoft.Json;
 
 namespace KoenZomers.Ring.Api
 {
@@ -24,7 +27,7 @@ namespace KoenZomers.Ring.Api
         {
             // Construct the request
             var request = (HttpWebRequest)WebRequest.Create(url);
-
+            
             // Check if the OAuth Bearer Authorization token should be added to the request
             if(!string.IsNullOrEmpty(bearerToken))
             {
@@ -177,6 +180,101 @@ namespace KoenZomers.Ring.Api
             var httpResponseStream = response.GetResponseStream();
 
             return httpResponseStream;
+        }
+
+        /// <summary>
+        /// Performs a HTTP request expecting a certain status code to be returned by the server
+        /// </summary>
+        /// <param name="url">Url of the request to make</param>
+        /// <param name="httpMethod">The HTTP method to use to call the provided Url</param>
+        /// <param name="expectedStatusCode">The expected HTTP status code to be replied by the Ring API. An exception will be thrown if the expectation was wrong. Leave NULL to not set an expectation.</param>
+        /// <param name="bodyContent">Content to send along with the request in the body. Leave NULL to not send along any content.</param>
+        /// <param name="bearerToken">Bearer token to authenticate the request with. Leave out to not authenticate the session.</param>
+        /// <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
+        /// <exception cref="Exceptions.UnexpectedOutcomeException">Thrown if the actual HTTP response is different from what was expected</exception>
+        public static async Task SendRequestWithExpectedStatusOutcome(Uri url, HttpMethod httpMethod, HttpStatusCode? expectedStatusCode, string bodyContent = null, string bearerToken = null, int timeout = 60000)
+        {
+            using (var client = new HttpClient())
+            {
+                client.Timeout = TimeSpan.FromMilliseconds(timeout);
+
+                var request = new HttpRequestMessage(httpMethod, url);
+
+                if (bearerToken != null)
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", bearerToken);
+                }
+
+                if (bodyContent != null)
+                {
+                    request.Content = new StringContent(bodyContent, Encoding.UTF8, "application/json");
+                }
+
+                // Send the HTTP request
+                var response = await client.SendAsync(request);
+
+                // Validate the resulting HTTP status against the expected status
+                if(expectedStatusCode.HasValue && response.StatusCode != expectedStatusCode.Value)
+                {
+                    throw new Exceptions.UnexpectedOutcomeException(response.StatusCode, expectedStatusCode.Value);
+                }
+            }            
+        }
+
+        /// <summary>
+        /// Sends a HttpRequest to the Ring API server
+        /// </summary>
+        /// <typeparam name="T">Type of entity to try to parse the result from the Ring API in</typeparam>
+        /// <param name="url">Url of the request to make</param>
+        /// <param name="httpMethod">The HTTP method to use to call the provided Url</param>
+        /// <param name="bodyContent">Content to send along with the request in the body. Leave NULL to not send along any content.</param>
+        /// <param name="bearerToken">Bearer token to authenticate the request with. Leave out to not authenticate the session.</param>
+        /// <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
+        /// <returns>Contents of the result returned by the Ring API parsed in the type T provided</returns>
+        public static async Task<T> SendRequest<T>(Uri url, HttpMethod httpMethod, string bodyContent, string bearerToken = null, int timeout = 60000)
+        {
+            // Make the request and get the body contents of the response
+            var response = await SendRequest(url, httpMethod, bodyContent, bearerToken, timeout);
+
+            // Try parsing the response to the type provided with this method
+            T responseEntity = JsonConvert.DeserializeObject<T>(response);
+            return responseEntity;
+        }
+
+        /// <summary>
+        /// Sends a HttpRequest to the Ring API server
+        /// </summary>
+        /// <param name="url">Url of the request to make</param>
+        /// <param name="httpMethod">The HTTP method to use to call the provided Url</param>
+        /// <param name="bodyContent">Content to send along with the request in the body. Leave NULL to not send along any content.</param>
+        /// <param name="bearerToken">Bearer token to authenticate the request with. Leave out to not authenticate the session.</param>
+        /// <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
+        /// <returns>Contents of the result returned by the Ring API</returns>
+        public static async Task<string> SendRequest(Uri url, HttpMethod httpMethod, string bodyContent, string bearerToken = null, int timeout = 60000)
+        {
+            using (var client = new HttpClient())
+            {
+                client.Timeout = TimeSpan.FromMilliseconds(timeout);
+                
+                var request = new HttpRequestMessage(httpMethod, url);
+
+                if (bearerToken != null)
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", bearerToken);
+                }
+
+                if (bodyContent != null)
+                {
+                    request.Content = new StringContent(bodyContent, Encoding.UTF8, "application/json");
+                }
+
+                // Send the HTTP request
+                var response = await client.SendAsync(request);
+
+                // Get the response body and return it
+                var responseBody = await response.Content.ReadAsStringAsync();
+                return responseBody;
+            }
         }
     }
 }
