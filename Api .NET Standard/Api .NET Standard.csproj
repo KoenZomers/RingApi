@@ -6,18 +6,16 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\KoenZomers.Ring.Api.snk</AssemblyOriginatorKeyFile>
     <AssemblyName>KoenZomers.Ring.Api</AssemblyName>
-    <Version>0.4.2.0</Version>
+    <Version>0.4.2.1</Version>
     <Company>Koen Zomers</Company>
     <Authors>Koen Zomers</Authors>
     <Description>API in .Net Standard to communicate with the Ring Doorbell service</Description>
     <PackageProjectUrl>https://github.com/KoenZomers/RingApi</PackageProjectUrl>
-    <AssemblyVersion>0.4.2.0</AssemblyVersion>
-    <PackageReleaseNotes>- Added method `GetLatestSnapshot` to retrieve a snapshot from a doorbot
-- Added method `UpdateSnapshot` to force refreshing a snapshot from a doorbot
-- Added method `GetDoorbotSnapshotTimestamp` to retrieve the date and time at which the last snapshot was taken from a doorbot</PackageReleaseNotes>
+    <AssemblyVersion>0.4.2.1</AssemblyVersion>
+    <PackageReleaseNotes>- Fixed an issue where `session.GetDoorbotsHistory(startDate, endDate)` could end up in an endless loop</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Copyright>Koen Zomers</Copyright>
-    <FileVersion>0.4.2.0</FileVersion>
+    <FileVersion>0.4.2.1</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>

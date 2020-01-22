@@ -362,7 +362,7 @@ namespace KoenZomers.Ring.Api
             do
             {
                 // Retrieve a batch with historical items
-                var response = await HttpUtility.GetContents(new Uri(RingApiBaseUrl, $"doorbots/history?limit={batchWithItems}{(allHistory.Count == 0 ? "" : "&older_than=" + allHistory.Last().Id)}"), AuthenticationToken);
+                var response = await HttpUtility.GetContents(new Uri(RingApiBaseUrl, $"doorbots/history?limit={batchWithItems}{(doorbotHistory.Count == 0 ? "" : "&older_than=" + doorbotHistory.Last().Id)}"), AuthenticationToken);
 
                 // Parse the result
                 doorbotHistory = JsonConvert.DeserializeObject<List<Entities.DoorbotHistoryEvent>>(response, _jsonSerializerSettings);
@@ -372,7 +372,7 @@ namespace KoenZomers.Ring.Api
 
             }
             // Keep retrieving next batches until the last item in the retrieved batch does not fit within the request date span anymore
-            while (doorbotHistory[doorbotHistory.Count - 1].CreatedAtDateTime.HasValue && doorbotHistory[doorbotHistory.Count - 1].CreatedAtDateTime.Value > startDate);
+            while (doorbotHistory.Count > 0 && doorbotHistory[doorbotHistory.Count - 1].CreatedAtDateTime.HasValue && doorbotHistory[doorbotHistory.Count - 1].CreatedAtDateTime.Value > startDate);
 
             return allHistory;
         }
