@@ -20,6 +20,10 @@ If you're just looking for a tool to download your Ring recordings, [go here ins
 
 ## Version History
 
+0.4.2.1 - released January 22, 2020
+
+- Fixed an issue where `session.GetDoorbotsHistory(startDate, endDate)` could end up in an endless loop
+
 0.4.2.0 - released January 2, 2020
 
 - Added method `GetLatestSnapshot` to retrieve a snapshot from a doorbot
