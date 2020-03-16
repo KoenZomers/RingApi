@@ -20,6 +20,10 @@ If you're just looking for a tool to download your Ring recordings, [go here ins
 
 ## Version History
 
+0.4.2.2 - released March 16, 2020
+
+- Merged [PR # 13](https://github.com/KoenZomers/RingApi/pull/13) adding possible exceptions to each method call and doing some code efficiency improvements. Thanks to [ronwarner](https://github.com/ronwarner) for his contribution!
+
 0.4.2.1 - released January 22, 2020
 
 - Fixed an issue where `session.GetDoorbotsHistory(startDate, endDate)` could end up in an endless loop

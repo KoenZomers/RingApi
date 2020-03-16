@@ -668,7 +668,7 @@ namespace KoenZomers.Ring.Api
         /// <summary>
         /// Requests the Ring API to get a fresh snapshot from the provided doorbot
         /// </summary>
-        /// <param name="doorbot">the doorbot to request a fresh snapshot from</param>
+        /// <param name="doorbot">The doorbot to request a fresh snapshot from</param>
         /// <exception cref="Exceptions.AuthenticationFailedException">Thrown when the refresh token is invalid.</exception>
         /// <exception cref="Exceptions.DownloadFailedException">Thrown when a download URL could not be created.</exception>
         /// <exception cref="Exceptions.SessionNotAuthenticatedException">Thrown when there's no OAuth token, or the OAuth token has expired and there is no valid refresh token.</exception>
