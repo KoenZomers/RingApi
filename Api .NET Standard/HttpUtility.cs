@@ -23,22 +23,24 @@ namespace KoenZomers.Ring.Api
         /// <param name="bearerToken">Bearer token to authenticate the request with. Leave out to not authenticate the session.</param>
         /// <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
         /// <returns>Contents of the result returned by the webserver</returns>
+        /// <exception cref="Exceptions.ThrottledException">Thrown when the web server indicates too many requests have been made (HTTP 429).</exception>
         public static async Task<string> GetContents(Uri url, string bearerToken = null, int timeout = 60000)
         {
             // Construct the request
             var request = (HttpWebRequest)WebRequest.Create(url);
-            
+
             // Check if the OAuth Bearer Authorization token should be added to the request
-            if(!string.IsNullOrEmpty(bearerToken))
+            if (!string.IsNullOrEmpty(bearerToken))
             {
                 request.Headers[HttpRequestHeader.Authorization] = $"Bearer {bearerToken}";
             }
+
             request.Timeout = timeout;
 
             // Send the request to the webserver
             WebResponse response;
             try
-            { 
+            {
                 response = await request.GetResponseAsync();
             }
             catch (WebException e)
@@ -49,7 +51,7 @@ namespace KoenZomers.Ring.Api
                     throw new Exceptions.ThrottledException(e);
                 }
 
-                throw e;
+                throw;
             }
 
             // Get the stream containing content returned by the server.
@@ -73,6 +75,9 @@ namespace KoenZomers.Ring.Api
         /// <param name="cookieContainer">Cookies which have been recorded for this session</param>
         /// <param name="timeout">Timeout in milliseconds on how long the request may take. Default = 60000 = 60 seconds.</param>
         /// <returns>The website contents returned by the webserver after posting the data</returns>
+        /// <exception cref="Exceptions.ThrottledException">Thrown when the web server indicates too many requests have been made (HTTP 429).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationIncorrectException">Thrown when the web server indicates the two-factor code was incorrect (HTTP 400).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationRequiredException">Thrown when the web server indicates two-factor authentication is required (HTTP 412).</exception>
         public static async Task<string> FormPost(Uri url, Dictionary<string, string> formFields, NameValueCollection headerFields, CookieContainer cookieContainer, int timeout = 60000)
         {
             // Construct the POST request which performs the login
@@ -138,7 +143,8 @@ namespace KoenZomers.Ring.Api
                 {
                     throw new Exceptions.TwoFactorAuthenticationIncorrectException(e);
                 }
-                throw e;
+
+                throw;
             }
 
             // Make sure the webserver has sent a response
@@ -177,7 +183,7 @@ namespace KoenZomers.Ring.Api
 
             // Receive the response from the webserver
             var response = await request.GetResponseAsync() as HttpWebResponse;
-            var httpResponseStream = response.GetResponseStream();
+            var httpResponseStream = response?.GetResponseStream();
 
             return httpResponseStream;
         }
@@ -214,11 +220,11 @@ namespace KoenZomers.Ring.Api
                 var response = await client.SendAsync(request);
 
                 // Validate the resulting HTTP status against the expected status
-                if(expectedStatusCode.HasValue && response.StatusCode != expectedStatusCode.Value)
+                if (expectedStatusCode.HasValue && response.StatusCode != expectedStatusCode.Value)
                 {
                     throw new Exceptions.UnexpectedOutcomeException(response.StatusCode, expectedStatusCode.Value);
                 }
-            }            
+            }
         }
 
         /// <summary>
@@ -255,7 +261,7 @@ namespace KoenZomers.Ring.Api
             using (var client = new HttpClient())
             {
                 client.Timeout = TimeSpan.FromMilliseconds(timeout);
-                
+
                 var request = new HttpRequestMessage(httpMethod, url);
 
                 if (bearerToken != null)

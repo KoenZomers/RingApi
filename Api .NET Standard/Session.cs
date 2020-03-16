@@ -88,6 +88,10 @@ namespace KoenZomers.Ring.Api
         /// </summary>
         /// <param name="refreshToken">RefreshToken received from the prior authentication</param>
         /// <returns>Authenticated session based on the RefreshToken or NULL if the session could not be authenticated</returns>
+        /// <exception cref="Exceptions.AuthenticationFailedException">Thrown when the refresh token is invalid.</exception>
+        /// <exception cref="Exceptions.ThrottledException">Thrown when the web server indicates too many requests have been made (HTTP 429).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationIncorrectException">Thrown when the web server indicates the two-factor code was incorrect (HTTP 400).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationRequiredException">Thrown when the web server indicates two-factor authentication is required (HTTP 412).</exception>
         public static async Task<Session> GetSessionByRefreshToken(string refreshToken)
         {
             var session = new Session();
@@ -116,6 +120,9 @@ namespace KoenZomers.Ring.Api
         /// <param name="language">Language of the app from which this API is being used. Defaults to 'en'. Optional field.</param>
         /// <param name="twoFactorAuthCode">The two factor authentication code retrieved through a text message to authenticate to two factor authentication enabled accounts. Leave this NULL at first to retrieve the text message. Then use this method again specifying the proper number received in the text message to finalize authentication.</param>
         /// <returns>Session object if the authentication was successful</returns>
+        /// <exception cref="Exceptions.ThrottledException">Thrown when the web server indicates too many requests have been made (HTTP 429).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationIncorrectException">Thrown when the web server indicates the two-factor code was incorrect (HTTP 400).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationRequiredException">Thrown when the web server indicates two-factor authentication is required (HTTP 412).</exception>
         public async Task<Entities.Session> Authenticate(   string operatingSystem = "windows", 
                                                             string hardwareId = "unspecified", 
                                                             string appBrand = "ring", 
@@ -135,6 +142,7 @@ namespace KoenZomers.Ring.Api
             {
                 throw new ArgumentNullException("operatingSystem", "Operating system is mandatory");
             }
+
             if (string.IsNullOrEmpty(hardwareId))
             {
                 throw new ArgumentNullException("hardwareId", "HardwareId system is mandatory");
@@ -207,18 +215,26 @@ namespace KoenZomers.Ring.Api
         /// <summary>
         /// Authenticates to the Ring API using the refresh token in the current session
         /// </summary>
+        /// <exception cref="Exceptions.AuthenticationFailedException">Thrown when the refresh token is invalid.</exception>
+        /// <exception cref="Exceptions.ThrottledException">Thrown when the web server indicates too many requests have been made (HTTP 429).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationIncorrectException">Thrown when the web server indicates the two-factor code was incorrect (HTTP 400).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationRequiredException">Thrown when the web server indicates two-factor authentication is required (HTTP 412).</exception>
         public async Task RefreshSession() => await RefreshSession(OAuthToken.RefreshToken);
 
         /// <summary>
         /// Authenticates to the Ring API using the provided refresh token
         /// </summary>
         /// <param name="refreshToken">RefreshToken to set up a new authenticated session</param>
+        /// <exception cref="Exceptions.AuthenticationFailedException">Thrown when the refresh token is invalid.</exception>
+        /// <exception cref="Exceptions.ThrottledException">Thrown when the web server indicates too many requests have been made (HTTP 429).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationIncorrectException">Thrown when the web server indicates the two-factor code was incorrect (HTTP 400).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationRequiredException">Thrown when the web server indicates two-factor authentication is required (HTTP 412).</exception>
         public async Task RefreshSession(string refreshToken)
         {
             // Check for mandatory parameters
             if (string.IsNullOrEmpty(refreshToken))
             {
-                throw new ArgumentNullException("refreshToken", "refreshToken is mandatory");
+                throw new ArgumentNullException(nameof(refreshToken), "refreshToken is mandatory");
             }
 
             // Construct the Form POST fields to send along with the authentication request
@@ -243,18 +259,25 @@ namespace KoenZomers.Ring.Api
             catch(System.Net.WebException e)
             {
                 // If a WebException gets thrown with Unauthorized it means that the refresh token was not valid, throw a custom exception to indicate this
-                if(e.Message.Contains("Unauthorized"))
+                if (e.Message.Contains("Unauthorized"))
                 {
                     throw new Exceptions.AuthenticationFailedException(e);
                 }
 
-                throw e;
+                throw;
             }
         }
 
         /// <summary>
         /// Ensure that the current session is authenticated and check if the access token is still valid. If not, it will try to renew the session using the refresh token.
         /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown when the refresh token is null or empty.</exception>
+        /// <exception cref="Exceptions.AuthenticationFailedException">Thrown when the refresh token is invalid.</exception>
+        /// <exception cref="Exceptions.SessionNotAuthenticatedException">Thrown when there's no OAuth token, or the OAuth token has expired and there is no valid refresh token.</exception>
+        /// <exception cref="Exceptions.ThrottledException">Thrown when the web server indicates too many requests have been made (HTTP 429).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationIncorrectException">Thrown when the web server indicates the two-factor code was incorrect (HTTP 400).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationRequiredException">Thrown when the web server indicates two-factor authentication is required (HTTP 412).</exception>
+        /// 
         public async Task EnsureSessionValid()
         {
             // Ensure the session is authenticated
@@ -265,10 +288,10 @@ namespace KoenZomers.Ring.Api
             }
 
             // Ensure the access token in the session is still valid
-            if(OAuthToken.ExpiresAt < DateTime.Now)
+            if (OAuthToken.ExpiresAt < DateTime.Now)
             {
                 // Access token is no longer valid, check if we have a refresh token available to refresh the session
-                if(string.IsNullOrEmpty(OAuthToken.RefreshToken))
+                if (string.IsNullOrEmpty(OAuthToken.RefreshToken))
                 {
                     // No refresh token available so can't renew the session
                     throw new Exceptions.SessionNotAuthenticatedException();
@@ -285,6 +308,11 @@ namespace KoenZomers.Ring.Api
         /// Returns all devices registered with Ring under the current account being used
         /// </summary>
         /// <returns>Devices registered with Ring under the current account</returns>
+        /// <exception cref="Exceptions.AuthenticationFailedException">Thrown when the refresh token is invalid.</exception>
+        /// <exception cref="Exceptions.SessionNotAuthenticatedException">Thrown when there's no OAuth token, or the OAuth token has expired and there is no valid refresh token.</exception>
+        /// <exception cref="Exceptions.ThrottledException">Thrown when the web server indicates too many requests have been made (HTTP 429).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationIncorrectException">Thrown when the web server indicates the two-factor code was incorrect (HTTP 400).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationRequiredException">Thrown when the web server indicates two-factor authentication is required (HTTP 412).</exception>
         public async Task<Entities.Devices> GetRingDevices()
         {
             await EnsureSessionValid();
@@ -300,6 +328,11 @@ namespace KoenZomers.Ring.Api
         /// </summary>
         /// <param name="limit">Amount of history items to retrieve. If you don't provide this value, Ring will default to returning only the most recent 20 items.</param>
         /// <returns>All events triggered by registered doorbots under the current account</returns>
+        /// <exception cref="Exceptions.AuthenticationFailedException">Thrown when the refresh token is invalid.</exception>
+        /// <exception cref="Exceptions.SessionNotAuthenticatedException">Thrown when there's no OAuth token, or the OAuth token has expired and there is no valid refresh token.</exception>
+        /// <exception cref="Exceptions.ThrottledException">Thrown when the web server indicates too many requests have been made (HTTP 429).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationIncorrectException">Thrown when the web server indicates the two-factor code was incorrect (HTTP 400).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationRequiredException">Thrown when the web server indicates two-factor authentication is required (HTTP 412).</exception>
         public async Task<List<Entities.DoorbotHistoryEvent>> GetDoorbotsHistory(int? limit = null)
         {
             await EnsureSessionValid();
@@ -337,7 +370,7 @@ namespace KoenZomers.Ring.Api
                 remainingItems = limit.Value - allHistory.Count;
             }
             // Keep retrieving next batches until nothing is being returned anymore or we have retrieved the amount of items that were requested through the limit
-            while (doorbotHistory.Count > 0  && remainingItems > 0);
+            while (doorbotHistory.Count > 0 && remainingItems > 0);
 
             return allHistory;
         }
@@ -348,6 +381,11 @@ namespace KoenZomers.Ring.Api
         /// <param name="startDate">Date and time in the past from where to start collecting history</param>
         /// <param name="endDate">Date and time in the past until where to start collecting history. Provide NULL to get everything up till now.</param>
         /// <returns>All events triggered by registered doorbots under the current account between the provided dates</returns>
+        /// <exception cref="Exceptions.AuthenticationFailedException">Thrown when the refresh token is invalid.</exception>
+        /// <exception cref="Exceptions.SessionNotAuthenticatedException">Thrown when there's no OAuth token, or the OAuth token has expired and there is no valid refresh token.</exception>
+        /// <exception cref="Exceptions.ThrottledException">Thrown when the web server indicates too many requests have been made (HTTP 429).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationIncorrectException">Thrown when the web server indicates the two-factor code was incorrect (HTTP 400).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationRequiredException">Thrown when the web server indicates two-factor authentication is required (HTTP 412).</exception>
         public async Task<List<Entities.DoorbotHistoryEvent>> GetDoorbotsHistory(DateTime startDate, DateTime? endDate)
         {
             await EnsureSessionValid();
@@ -357,8 +395,9 @@ namespace KoenZomers.Ring.Api
 
             // Create a list to hold all the results
             var allHistory = new List<Entities.DoorbotHistoryEvent>();
-
             var doorbotHistory = new List<Entities.DoorbotHistoryEvent>();
+            DateTime lastItemDateTime;
+
             do
             {
                 // Retrieve a batch with historical items
@@ -370,9 +409,10 @@ namespace KoenZomers.Ring.Api
                 // Add this next batch to the list with all the results which fit within the provided date span
                 allHistory.AddRange(doorbotHistory.Where(h => h.CreatedAtDateTime.HasValue && h.CreatedAtDateTime.Value >= startDate && (!endDate.HasValue || h.CreatedAtDateTime.Value <= endDate.Value)));
 
+                lastItemDateTime = doorbotHistory[doorbotHistory.Count - 1]?.CreatedAtDateTime ?? DateTime.MinValue;
             }
             // Keep retrieving next batches until the last item in the retrieved batch does not fit within the request date span anymore
-            while (doorbotHistory.Count > 0 && doorbotHistory[doorbotHistory.Count - 1].CreatedAtDateTime.HasValue && doorbotHistory[doorbotHistory.Count - 1].CreatedAtDateTime.Value > startDate);
+            while (doorbotHistory.Count > 0 && lastItemDateTime > startDate);
 
             return allHistory;
         }
@@ -382,6 +422,12 @@ namespace KoenZomers.Ring.Api
         /// </summary>
         /// <param name="doorbotHistoryEvent">The doorbot history event to retrieve the recording for</param>
         /// <returns>Stream containing contents of the recording</returns>
+        /// <exception cref="Exceptions.AuthenticationFailedException">Thrown when the refresh token is invalid.</exception>
+        /// <exception cref="Exceptions.DownloadFailedException">Thrown when a download URL could not be created.</exception>
+        /// <exception cref="Exceptions.SessionNotAuthenticatedException">Thrown when there's no OAuth token, or the OAuth token has expired and there is no valid refresh token.</exception>
+        /// <exception cref="Exceptions.ThrottledException">Thrown when the web server indicates too many requests have been made (HTTP 429).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationIncorrectException">Thrown when the web server indicates the two-factor code was incorrect (HTTP 400).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationRequiredException">Thrown when the web server indicates two-factor authentication is required (HTTP 412).</exception>
         public async Task<Stream> GetDoorbotHistoryRecording(Entities.DoorbotHistoryEvent doorbotHistoryEvent)
         {
             return await GetDoorbotHistoryRecording(doorbotHistoryEvent.Id);
@@ -392,6 +438,12 @@ namespace KoenZomers.Ring.Api
         /// </summary>
         /// <param name="dingId">Id of the doorbot history event to retrieve the recording for</param>
         /// <returns>Stream containing contents of the recording</returns>
+        /// <exception cref="Exceptions.AuthenticationFailedException">Thrown when the refresh token is invalid.</exception>
+        /// <exception cref="Exceptions.DownloadFailedException">Thrown when a download URL could not be created.</exception>
+        /// <exception cref="Exceptions.SessionNotAuthenticatedException">Thrown when there's no OAuth token, or the OAuth token has expired and there is no valid refresh token.</exception>
+        /// <exception cref="Exceptions.ThrottledException">Thrown when the web server indicates too many requests have been made (HTTP 429).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationIncorrectException">Thrown when the web server indicates the two-factor code was incorrect (HTTP 400).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationRequiredException">Thrown when the web server indicates two-factor authentication is required (HTTP 412).</exception>
         public async Task<Stream> GetDoorbotHistoryRecording(string dingId)
         {
             await EnsureSessionValid();
@@ -409,7 +461,7 @@ namespace KoenZomers.Ring.Api
                 downloadResult = JsonConvert.DeserializeObject<Entities.DownloadRecording>(response);
 
                 // If the Ring API returns an empty URL property, it means its still preparing the download on the server side. Just keep requesting the recording until it returns an URL.
-                if(!string.IsNullOrWhiteSpace(downloadResult.Url))
+                if (!string.IsNullOrWhiteSpace(downloadResult.Url))
                 {
                     // URL returned is not empty, start the download from the returned URL
                     break;
@@ -420,9 +472,9 @@ namespace KoenZomers.Ring.Api
             }
 
             // Ensure we ended with a valid URL to download the recording from
-            if(downloadResult == null || string.IsNullOrWhiteSpace(downloadResult.Url) || !Uri.TryCreate(downloadResult.Url, UriKind.Absolute, out Uri downloadUri))
+            if (downloadResult == null || string.IsNullOrWhiteSpace(downloadResult.Url) || !Uri.TryCreate(downloadResult.Url, UriKind.Absolute, out Uri downloadUri))
             {
-                throw new Exceptions.DownloadFailedException(downloadResult.Url);
+                throw new Exceptions.DownloadFailedException(downloadResult?.Url ?? "(no URL was created)");
             }
 
             // Request the file download from the returned URI
@@ -436,6 +488,12 @@ namespace KoenZomers.Ring.Api
         /// </summary>
         /// <param name="doorbotHistoryEvent">The doorbot history event to retrieve the recording for</param>
         /// <param name="saveAs">Full path including the filename where to save the recording</param>
+        /// <exception cref="Exceptions.AuthenticationFailedException">Thrown when the refresh token is invalid.</exception>
+        /// <exception cref="Exceptions.DownloadFailedException">Thrown when a download URL could not be created.</exception>
+        /// <exception cref="Exceptions.SessionNotAuthenticatedException">Thrown when there's no OAuth token, or the OAuth token has expired and there is no valid refresh token.</exception>
+        /// <exception cref="Exceptions.ThrottledException">Thrown when the web server indicates too many requests have been made (HTTP 429).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationIncorrectException">Thrown when the web server indicates the two-factor code was incorrect (HTTP 400).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationRequiredException">Thrown when the web server indicates two-factor authentication is required (HTTP 412).</exception>
         public async Task GetDoorbotHistoryRecording(Entities.DoorbotHistoryEvent doorbotHistoryEvent, string saveAs)
         {
             await GetDoorbotHistoryRecording(doorbotHistoryEvent.Id, saveAs);
@@ -446,6 +504,12 @@ namespace KoenZomers.Ring.Api
         /// </summary>
         /// <param name="dingId">Id of the doorbot history event to retrieve the recording for</param>
         /// <param name="saveAs">Full path including the filename where to save the recording</param>
+        /// <exception cref="Exceptions.AuthenticationFailedException">Thrown when the refresh token is invalid.</exception>
+        /// <exception cref="Exceptions.DownloadFailedException">Thrown when a download URL could not be created.</exception>
+        /// <exception cref="Exceptions.SessionNotAuthenticatedException">Thrown when there's no OAuth token, or the OAuth token has expired and there is no valid refresh token.</exception>
+        /// <exception cref="Exceptions.ThrottledException">Thrown when the web server indicates too many requests have been made (HTTP 429).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationIncorrectException">Thrown when the web server indicates the two-factor code was incorrect (HTTP 400).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationRequiredException">Thrown when the web server indicates two-factor authentication is required (HTTP 412).</exception>
         public async Task GetDoorbotHistoryRecording(string dingId, string saveAs)
         {
             await EnsureSessionValid();
@@ -464,6 +528,13 @@ namespace KoenZomers.Ring.Api
         /// </summary>
         /// <param name="historyEvent">The doorbot history event to share the recording of</param>
         /// <returns>Uri to the shared recording</returns>
+        /// <exception cref="Exceptions.AuthenticationFailedException">Thrown when the refresh token is invalid.</exception>
+        /// <exception cref="Exceptions.DownloadFailedException">Thrown when a download URL could not be created.</exception>
+        /// <exception cref="Exceptions.SessionNotAuthenticatedException">Thrown when there's no OAuth token, or the OAuth token has expired and there is no valid refresh token.</exception>
+        /// <exception cref="Exceptions.SharingFailedException">Thrown when a share URL could not be created.</exception>
+        /// <exception cref="Exceptions.ThrottledException">Thrown when the web server indicates too many requests have been made (HTTP 429).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationIncorrectException">Thrown when the web server indicates the two-factor code was incorrect (HTTP 400).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationRequiredException">Thrown when the web server indicates two-factor authentication is required (HTTP 412).</exception>
         public async Task<Uri> ShareRecording(Entities.DoorbotHistoryEvent historyEvent)
         {
             return await ShareRecording(historyEvent.Id);
@@ -474,6 +545,12 @@ namespace KoenZomers.Ring.Api
         /// </summary>
         /// <param name="recordingId">Id of the recording</param>
         /// <returns>Uri to the shared recording</returns>
+        /// <exception cref="Exceptions.AuthenticationFailedException">Thrown when the refresh token is invalid.</exception>
+        /// <exception cref="Exceptions.SessionNotAuthenticatedException">Thrown when there's no OAuth token, or the OAuth token has expired and there is no valid refresh token.</exception>
+        /// <exception cref="Exceptions.SharingFailedException">Thrown when a share URL could not be created.</exception>
+        /// <exception cref="Exceptions.ThrottledException">Thrown when the web server indicates too many requests have been made (HTTP 429).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationIncorrectException">Thrown when the web server indicates the two-factor code was incorrect (HTTP 400).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationRequiredException">Thrown when the web server indicates two-factor authentication is required (HTTP 412).</exception>
         public async Task<Uri> ShareRecording(string recordingId)
         {
             await EnsureSessionValid();
@@ -515,6 +592,12 @@ namespace KoenZomers.Ring.Api
         /// </summary>
         /// <param name="doorbot">The doorbot to retrieve the latest available snapshot from</param>
         /// <param name="saveAs">Full path including the filename where to save the snapshot</param>
+        /// <exception cref="Exceptions.AuthenticationFailedException">Thrown when the refresh token is invalid.</exception>
+        /// <exception cref="Exceptions.DownloadFailedException">Thrown when a download URL could not be created.</exception>
+        /// <exception cref="Exceptions.SessionNotAuthenticatedException">Thrown when there's no OAuth token, or the OAuth token has expired and there is no valid refresh token.</exception>
+        /// <exception cref="Exceptions.ThrottledException">Thrown when the web server indicates too many requests have been made (HTTP 429).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationIncorrectException">Thrown when the web server indicates the two-factor code was incorrect (HTTP 400).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationRequiredException">Thrown when the web server indicates two-factor authentication is required (HTTP 412).</exception>
         public async Task GetLatestSnapshot(Entities.Doorbot doorbot, string saveAs)
         {
             await GetLatestSnapshot(doorbot.Id, saveAs);
@@ -526,6 +609,12 @@ namespace KoenZomers.Ring.Api
         /// </summary>
         /// <param name="doorbotId">ID of the doorbot to retrieve the latest available snapshot from</param>
         /// <param name="saveAs">Full path including the filename where to save the snapshot</param>
+        /// <exception cref="Exceptions.AuthenticationFailedException">Thrown when the refresh token is invalid.</exception>
+        /// <exception cref="Exceptions.DownloadFailedException">Thrown when a download URL could not be created.</exception>
+        /// <exception cref="Exceptions.SessionNotAuthenticatedException">Thrown when there's no OAuth token, or the OAuth token has expired and there is no valid refresh token.</exception>
+        /// <exception cref="Exceptions.ThrottledException">Thrown when the web server indicates too many requests have been made (HTTP 429).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationIncorrectException">Thrown when the web server indicates the two-factor code was incorrect (HTTP 400).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationRequiredException">Thrown when the web server indicates two-factor authentication is required (HTTP 412).</exception>
         public async Task GetLatestSnapshot(int doorbotId, string saveAs)
         {
             using (var stream = await GetLatestSnapshot(doorbotId))
@@ -542,6 +631,12 @@ namespace KoenZomers.Ring.Api
         /// </summary>
         /// <param name="doorbot">The doorbot to retrieve the latest available snapshot from</param>
         /// <returns>Stream with the latest snapshot from the doorbot</returns>
+        /// <exception cref="Exceptions.AuthenticationFailedException">Thrown when the refresh token is invalid.</exception>
+        /// <exception cref="Exceptions.DownloadFailedException">Thrown when a download URL could not be created.</exception>
+        /// <exception cref="Exceptions.SessionNotAuthenticatedException">Thrown when there's no OAuth token, or the OAuth token has expired and there is no valid refresh token.</exception>
+        /// <exception cref="Exceptions.ThrottledException">Thrown when the web server indicates too many requests have been made (HTTP 429).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationIncorrectException">Thrown when the web server indicates the two-factor code was incorrect (HTTP 400).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationRequiredException">Thrown when the web server indicates two-factor authentication is required (HTTP 412).</exception>
         public async Task<Stream> GetLatestSnapshot(Entities.Doorbot doorbot)
         {
             return await GetLatestSnapshot(doorbot.Id);
@@ -552,6 +647,12 @@ namespace KoenZomers.Ring.Api
         /// </summary>
         /// <param name="doorbotId">ID of the doorbot to retrieve the latest available snapshot from</param>
         /// <returns>Stream with the latest snapshot from the doorbot</returns>
+        /// <exception cref="Exceptions.AuthenticationFailedException">Thrown when the refresh token is invalid.</exception>
+        /// <exception cref="Exceptions.DownloadFailedException">Thrown when a download URL could not be created.</exception>
+        /// <exception cref="Exceptions.SessionNotAuthenticatedException">Thrown when there's no OAuth token, or the OAuth token has expired and there is no valid refresh token.</exception>
+        /// <exception cref="Exceptions.ThrottledException">Thrown when the web server indicates too many requests have been made (HTTP 429).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationIncorrectException">Thrown when the web server indicates the two-factor code was incorrect (HTTP 400).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationRequiredException">Thrown when the web server indicates two-factor authentication is required (HTTP 412).</exception>
         public async Task<Stream> GetLatestSnapshot(int doorbotId)
         {
             await EnsureSessionValid();
@@ -567,7 +668,13 @@ namespace KoenZomers.Ring.Api
         /// <summary>
         /// Requests the Ring API to get a fresh snapshot from the provided doorbot
         /// </summary>
-        /// <param name="doorbotId">ID of the doorbot to request a fresh snapshot from</param>
+        /// <param name="doorbot">The doorbot to request a fresh snapshot from</param>
+        /// <exception cref="Exceptions.AuthenticationFailedException">Thrown when the refresh token is invalid.</exception>
+        /// <exception cref="Exceptions.DownloadFailedException">Thrown when a download URL could not be created.</exception>
+        /// <exception cref="Exceptions.SessionNotAuthenticatedException">Thrown when there's no OAuth token, or the OAuth token has expired and there is no valid refresh token.</exception>
+        /// <exception cref="Exceptions.ThrottledException">Thrown when the web server indicates too many requests have been made (HTTP 429).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationIncorrectException">Thrown when the web server indicates the two-factor code was incorrect (HTTP 400).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationRequiredException">Thrown when the web server indicates two-factor authentication is required (HTTP 412).</exception>
         /// <exception cref="Exceptions.UnexpectedOutcomeException">Thrown if the actual HTTP response is different from what was expected</exception>
         public async Task UpdateSnapshot(Entities.Doorbot doorbot)
         {
@@ -578,6 +685,12 @@ namespace KoenZomers.Ring.Api
         /// Requests the Ring API to get a fresh snapshot from the provided doorbot
         /// </summary>
         /// <param name="doorbotId">ID of the doorbot to request a fresh snapshot from</param>
+        /// <exception cref="Exceptions.AuthenticationFailedException">Thrown when the refresh token is invalid.</exception>
+        /// <exception cref="Exceptions.DownloadFailedException">Thrown when a download URL could not be created.</exception>
+        /// <exception cref="Exceptions.SessionNotAuthenticatedException">Thrown when there's no OAuth token, or the OAuth token has expired and there is no valid refresh token.</exception>
+        /// <exception cref="Exceptions.ThrottledException">Thrown when the web server indicates too many requests have been made (HTTP 429).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationIncorrectException">Thrown when the web server indicates the two-factor code was incorrect (HTTP 400).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationRequiredException">Thrown when the web server indicates two-factor authentication is required (HTTP 412).</exception>
         /// <exception cref="Exceptions.UnexpectedOutcomeException">Thrown if the actual HTTP response is different from what was expected</exception>
         public async Task UpdateSnapshot(int doorbotId)
         {
@@ -598,6 +711,10 @@ namespace KoenZomers.Ring.Api
         /// </summary>
         /// <param name="doorbot">The doorbot to request when the last snapshot was taken from</param>
         /// <returns>Entity with information regarding the last taken snapshot</returns>
+        /// <exception cref="Exceptions.SessionNotAuthenticatedException">Thrown when there's no OAuth token, or the OAuth token has expired and there is no valid refresh token.</exception>
+        /// <exception cref="Exceptions.ThrottledException">Thrown when the web server indicates too many requests have been made (HTTP 429).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationIncorrectException">Thrown when the web server indicates the two-factor code was incorrect (HTTP 400).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationRequiredException">Thrown when the web server indicates two-factor authentication is required (HTTP 412).</exception>
         public async Task<Entities.DoorbotTimestamps> GetDoorbotSnapshotTimestamp(Entities.Doorbot doorbot)
         {
             return await GetDoorbotSnapshotTimestamp(doorbot.Id);
@@ -608,6 +725,11 @@ namespace KoenZomers.Ring.Api
         /// </summary>
         /// <param name="doorbotId">ID of the doorbot to request when the last snapshot was taken from</param>
         /// <returns>Entity with information regarding the last taken snapshot</returns>
+        /// <exception cref="Exceptions.AuthenticationFailedException">Thrown when the refresh token is invalid.</exception>
+        /// <exception cref="Exceptions.SessionNotAuthenticatedException">Thrown when there's no OAuth token, or the OAuth token has expired and there is no valid refresh token.</exception>
+        /// <exception cref="Exceptions.ThrottledException">Thrown when the web server indicates too many requests have been made (HTTP 429).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationIncorrectException">Thrown when the web server indicates the two-factor code was incorrect (HTTP 400).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationRequiredException">Thrown when the web server indicates two-factor authentication is required (HTTP 412).</exception>
         public async Task<Entities.DoorbotTimestamps> GetDoorbotSnapshotTimestamp(int doorbotId)
         {
             await EnsureSessionValid();
