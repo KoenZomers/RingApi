@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -6,16 +6,16 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\KoenZomers.Ring.Api.snk</AssemblyOriginatorKeyFile>
     <AssemblyName>KoenZomers.Ring.Api</AssemblyName>
-    <Version>0.4.2.1</Version>
+    <Version>0.4.2.2</Version>
     <Company>Koen Zomers</Company>
     <Authors>Koen Zomers</Authors>
     <Description>API in .Net Standard to communicate with the Ring Doorbell service</Description>
     <PackageProjectUrl>https://github.com/KoenZomers/RingApi</PackageProjectUrl>
-    <AssemblyVersion>0.4.2.1</AssemblyVersion>
-    <PackageReleaseNotes>- Fixed an issue where `session.GetDoorbotsHistory(startDate, endDate)` could end up in an endless loop</PackageReleaseNotes>
+    <AssemblyVersion>0.4.2.2</AssemblyVersion>
+    <PackageReleaseNotes>- Merged PR # 13 adding possible exceptions to each method call and doing some code efficiency improvements. Thanks to ronwarner for his contribution!</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Copyright>Koen Zomers</Copyright>
-    <FileVersion>0.4.2.1</FileVersion>
+    <FileVersion>0.4.2.2</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
