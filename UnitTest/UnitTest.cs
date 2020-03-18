@@ -13,40 +13,105 @@ namespace KoenZomers.Ring.UnitTest
         /// <summary>
         /// Username to use to connect to the Ring API
         /// </summary>
-        public string Username => ConfigurationManager.AppSettings["RingUsername"];
+        public static string Username => ConfigurationManager.AppSettings["RingUsername"];
 
         /// <summary>
         /// Password to use to connect to the Ring API
         /// </summary>
-        public string Password => ConfigurationManager.AppSettings["RingPassword"];
+        public static string Password => ConfigurationManager.AppSettings["RingPassword"];
 
         /// <summary>
         /// Two factor authentication token to use to connect to the Ring API
         /// </summary>
-        public string TwoFactorAuthenticationToken => ConfigurationManager.AppSettings["TwoFactorAuthenticationToken"];
+        public static string TwoFactorAuthenticationToken
+        {
+            get { return ConfigurationManager.AppSettings["TwoFactorAuthenticationToken"]; }
+            set 
+            { 
+                var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                if (configFile.AppSettings.Settings["TwoFactorAuthenticationToken"] != null)
+                {
+                    configFile.AppSettings.Settings["TwoFactorAuthenticationToken"].Value = value;
+                }
+                else
+                {
+                    configFile.AppSettings.Settings.Add("TwoFactorAuthenticationToken", value);
+                }
+                configFile.Save(ConfigurationSaveMode.Modified);
+                ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
+            }
+        }
+        /// <summary>
+        /// Refresh token used to connect to the Ring API
+        /// </summary>
+        public static string RefreshToken
+        {
+            get { return ConfigurationManager.AppSettings["RingRefreshToken"]; }
+            set 
+            { 
+                var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                if (configFile.AppSettings.Settings["RingRefreshToken"] != null)
+                {
+                    configFile.AppSettings.Settings["RingRefreshToken"].Value = value;
+                }
+                else
+                {
+                    configFile.AppSettings.Settings.Add("RingRefreshToken", value);
+                }
+                configFile.Save(ConfigurationSaveMode.Modified);
+                ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
+            }
+        }
 
         /// <summary>
-        /// Test the scenario where the authentication should succeed
+        /// Session set up by the initializer and used by the Unit Tests to perform actions against the Ring API
         /// </summary>
-        [TestMethod]
-        public async Task AuthenticateSuccessTest()
-        {
-            var session = new Api.Session(Username, Password);
+        public static Api.Session session;
 
-            Api.Entities.Session authResult = null;
-            try
+        /// <summary>
+        /// Prepares the Unit Test by setting up a session to Ring
+        /// </summary>
+        /// <param name="testContext"></param>
+        [ClassInitialize]
+        public static async Task TestInitialize(TestContext testContext)
+        {
+            // Check if we have a refresh token to authenticate to Ring with
+            if (string.IsNullOrEmpty(RefreshToken))
             {
-                authResult = await session.Authenticate(twoFactorAuthCode: TwoFactorAuthenticationToken);
+                // No refresh token available, try to authenticate with the credentials from the config file
+                session = new Api.Session(Username, Password);
+
+                Api.Entities.Session authResult = null;
+                try
+                {
+                    authResult = await session.Authenticate(twoFactorAuthCode: TwoFactorAuthenticationToken);
+                    
+                    if (!string.IsNullOrEmpty(TwoFactorAuthenticationToken))
+                    {
+                        // Clear the configured two factor authentication code in the configuration file after we've used it once as it won't be valid anymore next time
+                        TwoFactorAuthenticationToken = string.Empty;
+                    }
+                }
+                catch (Api.Exceptions.TwoFactorAuthenticationRequiredException)
+                {
+                    Assert.Fail("Ring account requires two factor authentication. Add the token received through text message to the config file as 'TwoFactorAuthenticationToken' and run the test again.");
+                }
+                catch (Api.Exceptions.TwoFactorAuthenticationIncorrectException)
+                {
+                    Assert.Fail("The two factor authentication token provided in the config file as 'TwoFactorAuthenticationToken' is invalid or has expired.");
+                }
+                Assert.IsFalse(authResult == null || string.IsNullOrEmpty(authResult.Profile.AuthenticationToken), "Failed to authenticate");
+
+                // Store the refresh token for subsequent runs
+                RefreshToken = session.OAuthToken.RefreshToken;
             }
-            catch(Api.Exceptions.TwoFactorAuthenticationRequiredException)
+            else
             {
-                Assert.Fail("Ring account requires two factor authentication. Add the token received through text message to the config file as 'TwoFactorAuthenticationToken' and run the test again.");
+                // Use the refresh token to set up a new session with Ring so we don't have to deal with the two factor authentication anymore
+                session = await Api.Session.GetSessionByRefreshToken(RefreshToken);
+
+                Assert.IsFalse(session == null || session.OAuthToken == null || string.IsNullOrEmpty(session.OAuthToken.AccessToken), "Failed to authenticate using refresh token");
             }
-            catch (Api.Exceptions.TwoFactorAuthenticationIncorrectException)
-            {
-                Assert.Fail("The two factor authentication token provided in the config file as 'TwoFactorAuthenticationToken' is invalid or has expired.");
-            }
-            Assert.IsFalse(authResult == null || string.IsNullOrEmpty(authResult.Profile.AuthenticationToken), "Failed to authenticate");
         }
 
         /// <summary>
@@ -67,9 +132,7 @@ namespace KoenZomers.Ring.UnitTest
         [TestMethod]
         public async Task AuthenticateWithRefreshTokenSuccessTest()
         {
-            // Authenticate normally the first time in order to get a refresh token to test
-            var session = new Api.Session(Username, Password);
-            await session.Authenticate(twoFactorAuthCode: TwoFactorAuthenticationToken);
+            if (!IsSessionActive()) return;
 
             // Request a new authenticated session based on the RefreshToken
             var refreshedSession = await Api.Session.GetSessionByRefreshToken(session.OAuthToken.RefreshToken);
@@ -84,7 +147,7 @@ namespace KoenZomers.Ring.UnitTest
         public async Task AuthenticateWithRefreshTokenFailTest()
         {
             // Request a new authenticated session based on a non existing RefreshToken
-            var refreshedSession = await Api.Session.GetSessionByRefreshToken("abcdefghijklmnopqrstuvwxyz");
+            await Api.Session.GetSessionByRefreshToken("abcdefghijklmnopqrstuvwxyz");
         }
 
         /// <summary>
@@ -93,8 +156,7 @@ namespace KoenZomers.Ring.UnitTest
         [TestMethod]
         public async Task GetDevicesTest()
         {
-            var session = new Api.Session(Username, Password);
-            await session.Authenticate(twoFactorAuthCode: TwoFactorAuthenticationToken);
+            if (!IsSessionActive()) return;
 
             var devices = await session.GetRingDevices();
             Assert.IsTrue(devices.Chimes.Count > 0 || devices.Doorbots.Count > 0 || devices.AuthorizedDoorbots.Count > 0 || devices.StickupCams.Count > 0, "No doorbots, stickup cams and/or chimes returned");
@@ -107,7 +169,7 @@ namespace KoenZomers.Ring.UnitTest
         [ExpectedException(typeof(Api.Exceptions.SessionNotAuthenticatedException))]
         public async Task GetDevicesUnauthenticatedTest()
         {
-            var session = new Api.Session(Username, Password);
+            var session = new Api.Session("", "");
             await session.GetRingDevices();
         }
 
@@ -117,8 +179,7 @@ namespace KoenZomers.Ring.UnitTest
         [TestMethod]
         public async Task GetDoorbotsHistoryTest()
         {
-            var session = new Api.Session(Username, Password);
-            await session.Authenticate(twoFactorAuthCode: TwoFactorAuthenticationToken);
+            if (!IsSessionActive()) return;
 
             var doorbotHistory = await session.GetDoorbotsHistory();
             Assert.IsTrue(doorbotHistory.Count > 0, "No doorbot history items returned");
@@ -131,10 +192,9 @@ namespace KoenZomers.Ring.UnitTest
         [TestMethod]
         public async Task GetDoorbotsHistoryWithLimitTest()
         {
-            var limit = 250;
+            if (!IsSessionActive()) return;
 
-            var session = new Api.Session(Username, Password);
-            await session.Authenticate(twoFactorAuthCode: TwoFactorAuthenticationToken);
+            var limit = 250;
 
             var doorbotHistory = await session.GetDoorbotsHistory(limit);
             Assert.IsTrue(doorbotHistory.Count > 0, "No doorbot history items returned");
@@ -147,11 +207,10 @@ namespace KoenZomers.Ring.UnitTest
         [TestMethod]
         public async Task GetDoorbotsHistoryByDateSpanTest()
         {
-            var startDate = DateTime.Now.AddDays(-30);
-            var endDate = DateTime.Now.AddDays(-1);
+            if (!IsSessionActive()) return;
 
-            var session = new Api.Session(Username, Password);
-            await session.Authenticate(twoFactorAuthCode: TwoFactorAuthenticationToken);
+            var startDate = DateTime.Now.AddDays(-2);
+            var endDate = DateTime.Now.AddDays(-1);
 
             var doorbotHistory = await session.GetDoorbotsHistory(startDate, endDate);
             Assert.IsTrue(doorbotHistory.Count > 0, "No doorbot history items returned");
@@ -164,8 +223,7 @@ namespace KoenZomers.Ring.UnitTest
         [TestMethod]
         public async Task GetDoorbotsHistoryRecordingByIdTest()
         {
-            var session = new Api.Session(Username, Password);
-            await session.Authenticate(twoFactorAuthCode: TwoFactorAuthenticationToken);
+            if (!IsSessionActive()) return;
 
             var doorbotHistory = await session.GetDoorbotsHistory();
 
@@ -184,8 +242,7 @@ namespace KoenZomers.Ring.UnitTest
         [TestMethod]
         public async Task GetDoorbotsHistoryRecordingByInstanceTest()
         {
-            var session = new Api.Session(Username, Password);
-            await session.Authenticate(twoFactorAuthCode: TwoFactorAuthenticationToken);
+            if (!IsSessionActive()) return;
 
             var doorbotHistory = await session.GetDoorbotsHistory(limit: 1);
 
@@ -204,9 +261,8 @@ namespace KoenZomers.Ring.UnitTest
         [TestMethod]
         public async Task ShareRecordingTest()
         {
-            var session = new Api.Session(Username, Password);
-            await session.Authenticate(twoFactorAuthCode: TwoFactorAuthenticationToken);
-
+            if (!IsSessionActive()) return;
+            
             var doorbotHistory = await session.GetDoorbotsHistory(limit: 1);
 
             Assert.IsTrue(doorbotHistory.Count > 0, "No doorbot history events were found");
@@ -220,8 +276,7 @@ namespace KoenZomers.Ring.UnitTest
         [TestMethod]
         public async Task DownloadLatestSnapshotTest()
         {
-            var session = new Api.Session(Username, Password);
-            await session.Authenticate(twoFactorAuthCode: TwoFactorAuthenticationToken);
+            if (!IsSessionActive()) return;
 
             var devices = await session.GetRingDevices();
             Assert.IsTrue(devices != null, "Unable to retrieve Ring devices");
@@ -240,8 +295,7 @@ namespace KoenZomers.Ring.UnitTest
         [TestMethod]
         public async Task UpdateSnapshotTest()
         {
-            var session = new Api.Session(Username, Password);
-            await session.Authenticate(twoFactorAuthCode: TwoFactorAuthenticationToken);
+            if (!IsSessionActive()) return;
 
             var devices = await session.GetRingDevices();
             Assert.IsTrue(devices != null, "Unable to retrieve Ring devices");
@@ -256,8 +310,7 @@ namespace KoenZomers.Ring.UnitTest
         [TestMethod]
         public async Task GetSnapshotTimestampTest()
         {
-            var session = new Api.Session(Username, Password);
-            await session.Authenticate(twoFactorAuthCode: TwoFactorAuthenticationToken);
+            if (!IsSessionActive()) return;
 
             var devices = await session.GetRingDevices();
             Assert.IsTrue(devices != null, "Unable to retrieve Ring devices");
@@ -267,6 +320,21 @@ namespace KoenZomers.Ring.UnitTest
 
             Assert.IsTrue(doorbotSnapshotTimestamps.Timestamp.Count > 0, "No timestamps were returned for the doorbot");
             Assert.IsTrue(doorbotSnapshotTimestamps.Timestamp[0].Timestamp.HasValue, "Unable to define the date and time for the last snapshot of the doorbot");
+        }
+
+        /// <summary>
+        /// Check if there is an active Ring session created by the class initializer
+        /// </summary>
+        /// <returns>True if there's an active session, false if not</returns>
+        private bool IsSessionActive()
+        {
+            if (session == null)
+            {
+                Assert.Inconclusive("Test can't be done as there's no active session");
+                return false;
+            }
+            
+            return true;
         }
     }
 }
