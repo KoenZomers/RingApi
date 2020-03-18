@@ -20,6 +20,10 @@ If you're just looking for a tool to download your Ring recordings, [go here ins
 
 ## Version History
 
+0.4.3.1 - released March 18, 2020
+
+- Added exception of type `DeviceUnknownException` to be thrown when using `GetDoorbotsHistory` requesting information for a specific Ring device which does not exist
+
 0.4.3.0 - released March 18, 2020
 
 - Added `GetDoorbotsHistory` method which allows providing a specific doorbot id to retrieve only the items for that specific doorbot

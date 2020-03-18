@@ -214,6 +214,19 @@ namespace KoenZomers.Ring.UnitTest
         }
 
         /// <summary>
+        /// Test if the result if doorbot history events are tried to be retrieved only for a specific doorbot which does not exist
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(Api.Exceptions.DeviceUnknownException))]
+        public async Task GetDoorbotsHistoryForSpecificNonExistingDoorbotTest()
+        {
+            if (!IsSessionActive()) return;
+
+            // Try getting the historical items for the a doorbot that does not exist
+            await session.GetDoorbotsHistory(doorbotId: 1234567);
+        }
+
+        /// <summary>
         /// Test if the doorbot history events can be retrieved with a specific amount of items
         /// </summary>
         [TestMethod]
