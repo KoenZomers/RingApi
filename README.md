@@ -183,7 +183,7 @@ var timestamps = await session.GetDoorbotSnapshotTimestamp(1111111);
 
 ### Unit Tests
 
-Check out the UnitTest project in this solution for full insight in the possibilities and working code samples. If you want to run the Unit Tests, just copy the App.sample.config file in the UnitTest project to App.config and fill in your Ring username and password and you're good to go to run all tests. They will not make any changes to your Ring devices or Ring profile, just retrieve information, so you can run it without any risk.
+Check out the UnitTest project in this solution for full insight in the possibilities and working code samples. If you want to run the Unit Tests, just copy the App.sample.config file in the UnitTest project to App.config and fill in your Ring username and password and you're good to go to run all tests. They will not make any changes to your Ring devices or Ring profile, just retrieve information, so you can run it without any risk. If you're using text message or e-mail message two factor authentication on the Ring account you want to perform the unit tests with, just leave `TwoFactorAuthenticationToken` empty in the config file, run the unit tests, wait for the text or e-mail message to arrive, enter the code from the text or e-mail message in the `TwoFactorAuthenticationToken` appSetting in the config file and run the unit tests again. It should now succeed and update the `RingRefreshToken` appSetting with a valid refresh token it can use on subsequent runs so it no longer needs credentials or two factor authentication to run the unit tests.
 
 ## Available via NuGet
 
