@@ -326,6 +326,7 @@ namespace KoenZomers.Ring.Api
         /// <summary>
         /// Returns all events registered for the doorbots
         /// </summary>
+        /// <param name="doorbotId">Id of the doorbot to retrieve the history for. Provide NULL to retrieve the history for all available doorbots.</param>
         /// <param name="limit">Amount of history items to retrieve. If you don't provide this value, Ring will default to returning only the most recent 20 items.</param>
         /// <returns>All events triggered by registered doorbots under the current account</returns>
         /// <exception cref="Exceptions.AuthenticationFailedException">Thrown when the refresh token is invalid.</exception>
@@ -333,12 +334,12 @@ namespace KoenZomers.Ring.Api
         /// <exception cref="Exceptions.ThrottledException">Thrown when the web server indicates too many requests have been made (HTTP 429).</exception>
         /// <exception cref="Exceptions.TwoFactorAuthenticationIncorrectException">Thrown when the web server indicates the two-factor code was incorrect (HTTP 400).</exception>
         /// <exception cref="Exceptions.TwoFactorAuthenticationRequiredException">Thrown when the web server indicates two-factor authentication is required (HTTP 412).</exception>
-        public async Task<List<Entities.DoorbotHistoryEvent>> GetDoorbotsHistory(int? limit = null)
+        public async Task<List<Entities.DoorbotHistoryEvent>> GetDoorbotsHistory(int? doorbotId, int? limit = null)
         {
             await EnsureSessionValid();
 
             // Receive the first batch
-            var response = await HttpUtility.GetContents(new Uri(RingApiBaseUrl, $"doorbots/history{(limit.HasValue ? $"?limit={limit}" : "")}"), AuthenticationToken);
+            var response = await HttpUtility.GetContents(new Uri(RingApiBaseUrl, $"doorbots/{(doorbotId.HasValue ? $"{doorbotId.Value}/" : "")}history{(limit.HasValue ? $"?limit={limit}" : "")}"), AuthenticationToken);
 
             // Parse the result
             var doorbotHistory = JsonConvert.DeserializeObject<List<Entities.DoorbotHistoryEvent>>(response, _jsonSerializerSettings);
@@ -358,7 +359,7 @@ namespace KoenZomers.Ring.Api
             do
             {
                 // Retrieve the next batch
-                response = await HttpUtility.GetContents(new Uri(RingApiBaseUrl, $"doorbots/history?limit={remainingItems}&older_than={allHistory.Last().Id}"), AuthenticationToken);
+                response = await HttpUtility.GetContents(new Uri(RingApiBaseUrl, $"doorbots/{(doorbotId.HasValue ? $"{doorbotId.Value}/" : "")}history?limit={remainingItems}&older_than={allHistory.Last().Id}"), AuthenticationToken);
 
                 // Parse the result
                 doorbotHistory = JsonConvert.DeserializeObject<List<Entities.DoorbotHistoryEvent>>(response, _jsonSerializerSettings);
@@ -376,17 +377,33 @@ namespace KoenZomers.Ring.Api
         }
 
         /// <summary>
+        /// Returns all events registered for all the available doorbots
+        /// </summary>
+        /// <param name="limit">Amount of history items to retrieve. If you don't provide this value, Ring will default to returning only the most recent 20 items.</param>
+        /// <returns>All events triggered by registered doorbots under the current account</returns>
+        /// <exception cref="Exceptions.AuthenticationFailedException">Thrown when the refresh token is invalid.</exception>
+        /// <exception cref="Exceptions.SessionNotAuthenticatedException">Thrown when there's no OAuth token, or the OAuth token has expired and there is no valid refresh token.</exception>
+        /// <exception cref="Exceptions.ThrottledException">Thrown when the web server indicates too many requests have been made (HTTP 429).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationIncorrectException">Thrown when the web server indicates the two-factor code was incorrect (HTTP 400).</exception>
+        /// <exception cref="Exceptions.TwoFactorAuthenticationRequiredException">Thrown when the web server indicates two-factor authentication is required (HTTP 412).</exception>
+        public async Task<List<Entities.DoorbotHistoryEvent>> GetDoorbotsHistory(int? limit = null)
+        {
+            return await GetDoorbotsHistory(null, limit);
+        }
+
+        /// <summary>
         /// Returns all events registered for the doorbots that happened between the provided dates. Notice: Ring does not provide an API which allows for retrieving items between two specific dates. This means that this code will just keep retriving historical items until it has all items that occurred in the provided date span. This is not super efficient, but unfortunately the only way.
         /// </summary>
         /// <param name="startDate">Date and time in the past from where to start collecting history</param>
         /// <param name="endDate">Date and time in the past until where to start collecting history. Provide NULL to get everything up till now.</param>
+        /// <param name="doorbotId">Id of the doorbot to retrieve the history for. Provide NULL to retrieve the history for all available doorbots.</param>
         /// <returns>All events triggered by registered doorbots under the current account between the provided dates</returns>
         /// <exception cref="Exceptions.AuthenticationFailedException">Thrown when the refresh token is invalid.</exception>
         /// <exception cref="Exceptions.SessionNotAuthenticatedException">Thrown when there's no OAuth token, or the OAuth token has expired and there is no valid refresh token.</exception>
         /// <exception cref="Exceptions.ThrottledException">Thrown when the web server indicates too many requests have been made (HTTP 429).</exception>
         /// <exception cref="Exceptions.TwoFactorAuthenticationIncorrectException">Thrown when the web server indicates the two-factor code was incorrect (HTTP 400).</exception>
         /// <exception cref="Exceptions.TwoFactorAuthenticationRequiredException">Thrown when the web server indicates two-factor authentication is required (HTTP 412).</exception>
-        public async Task<List<Entities.DoorbotHistoryEvent>> GetDoorbotsHistory(DateTime startDate, DateTime? endDate)
+        public async Task<List<Entities.DoorbotHistoryEvent>> GetDoorbotsHistory(DateTime startDate, DateTime? endDate, int? doorbotId = null)
         {
             await EnsureSessionValid();
 
@@ -401,7 +418,7 @@ namespace KoenZomers.Ring.Api
             do
             {
                 // Retrieve a batch with historical items
-                var response = await HttpUtility.GetContents(new Uri(RingApiBaseUrl, $"doorbots/history?limit={batchWithItems}{(doorbotHistory.Count == 0 ? "" : "&older_than=" + doorbotHistory.Last().Id)}"), AuthenticationToken);
+                var response = await HttpUtility.GetContents(new Uri(RingApiBaseUrl, $"doorbots/{(doorbotId.HasValue ? $"{doorbotId.Value}/" : "")}history?limit={batchWithItems}{(doorbotHistory.Count == 0 ? "" : "&older_than=" + doorbotHistory.Last().Id)}"), AuthenticationToken);
 
                 // Parse the result
                 doorbotHistory = JsonConvert.DeserializeObject<List<Entities.DoorbotHistoryEvent>>(response, _jsonSerializerSettings);

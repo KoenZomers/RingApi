@@ -187,6 +187,33 @@ namespace KoenZomers.Ring.UnitTest
         }
 
         /// <summary>
+        /// Test if the doorbot history events can be retrieved only for a specific doorbot with the default amount of items
+        /// </summary>
+        [TestMethod]
+        public async Task GetDoorbotsHistoryForSpecificDoorbotTest()
+        {
+            if (!IsSessionActive()) return;
+
+            // Get the available Ring devices
+            var devices = await session.GetRingDevices();
+
+            // Ensure there's at least one doorbot available
+            if (devices.Doorbots.Count == 0 && devices.AuthorizedDoorbots.Count == 0)
+            {
+                Assert.Inconclusive("There are no Ring doorbots available under this account to perform this test with");
+                return;
+            }
+            
+            // Take the first doorbot to retrieve the historical items for
+            var doorbot = devices.Doorbots.Count > 0 ? devices.Doorbots[0] : devices.AuthorizedDoorbots[0];
+
+            // Get the historical items for the specific doorbot
+            var doorbotHistory = await session.GetDoorbotsHistory(doorbotId: doorbot.Id);
+
+            Assert.IsFalse(doorbotHistory.Count == 0, "No doorbot history items returned");
+        }
+
+        /// <summary>
         /// Test if the doorbot history events can be retrieved with a specific amount of items
         /// </summary>
         [TestMethod]

@@ -20,6 +20,10 @@ If you're just looking for a tool to download your Ring recordings, [go here ins
 
 ## Version History
 
+0.4.3.0 - released March 18, 2020
+
+- Added `GetDoorbotsHistory` method which allows providing a specific doorbot id to retrieve only the items for that specific doorbot
+
 0.4.2.2 - released March 16, 2020
 
 - Merged [PR # 13](https://github.com/KoenZomers/RingApi/pull/13) adding possible exceptions to each method call and doing some code efficiency improvements. Thanks to [ronwarner](https://github.com/ronwarner) for his contribution!
