@@ -423,7 +423,7 @@ namespace KoenZomers.Ring.Api
             // Create a list to hold all the results
             var allHistory = new List<Entities.DoorbotHistoryEvent>();
             var doorbotHistory = new List<Entities.DoorbotHistoryEvent>();
-            DateTime lastItemDateTime;
+            DateTime? lastItemDateTime = null;
 
             do
             {
@@ -436,10 +436,13 @@ namespace KoenZomers.Ring.Api
                 // Add this next batch to the list with all the results which fit within the provided date span
                 allHistory.AddRange(doorbotHistory.Where(h => h.CreatedAtDateTime.HasValue && h.CreatedAtDateTime.Value >= startDate && (!endDate.HasValue || h.CreatedAtDateTime.Value <= endDate.Value)));
 
-                lastItemDateTime = doorbotHistory[doorbotHistory.Count - 1]?.CreatedAtDateTime ?? DateTime.MinValue;
+                if (doorbotHistory.Count > 0)
+                {
+                    lastItemDateTime = doorbotHistory[doorbotHistory.Count - 1]?.CreatedAtDateTime ?? DateTime.MinValue;
+                }
             }
             // Keep retrieving next batches until the last item in the retrieved batch does not fit within the request date span anymore
-            while (doorbotHistory.Count > 0 && lastItemDateTime > startDate);
+            while (doorbotHistory.Count > 0 && lastItemDateTime.HasValue && lastItemDateTime.Value > startDate);
 
             return allHistory;
         }

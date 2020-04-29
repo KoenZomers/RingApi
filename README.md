@@ -20,6 +20,10 @@ If you're just looking for a tool to download your Ring recordings, [go here ins
 
 ## Version History
 
+0.4.3.2 - released April 29, 2020
+
+- Bugfix in `GetDoorbotsHistory` throwing a NullReferenceException when the Ring API would return an empty result
+
 0.4.3.1 - released March 18, 2020
 
 - Added exception of type `DeviceUnknownException` to be thrown when using `GetDoorbotsHistory` requesting information for a specific Ring device which does not exist
