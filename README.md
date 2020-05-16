@@ -149,7 +149,7 @@ Note that this line does not perform any communications with the Ring API yet. Y
 await session.Authenticate();
 ```
 
-If the Ring account you're connecting with has been set up with a two factor authentication requirement, wait for the text message from Ring to arrive on your mobile phone and run Authenticate again providing this code:
+If the Ring account you're connecting with has been set up with a two factor authentication requirement, wait for the text message or e-mail from Ring with the code to arrive and run Authenticate again providing this code:
 
 ```C#
 await session.Authenticate(twoFactorAuthCode: "12345");
@@ -159,8 +159,15 @@ If the account does not require two factor authentication, you can skip this ste
 
 Once this succeeds, you can call one of the methods on the session instance to retrieve data, i.e.:
 
+To retrieve all Ring devices connected to your account to i.e. retrieve the device Id needed for some methods:
+
 ```C#
-// Retrieves all recorded doorbell events
+var devices = await session.GetRingDevices();
+```
+
+To retrieve all recorded doorbell events:
+
+```C#
 var doorbotHistory = await session.GetDoorbotsHistory();
 ```
 
