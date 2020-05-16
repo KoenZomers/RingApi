@@ -131,7 +131,7 @@ This API is built using Microsoft .NET Standard 2.0 and is fully asynchronous
 
 ## Usage Instructions
 
-To communicate with the Ring API, add the NuGet package to your solution and add a using reference in your code:
+To communicate with the Ring API, [add the NuGet package](https://github.com/KoenZomers/RingApi#available-via-nuget) to your solution and add a using reference in your code:
 
 ```C#
 using KoenZomers.Ring.Api;
