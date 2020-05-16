@@ -165,37 +165,37 @@ To retrieve all Ring devices connected to your account to i.e. retrieve the devi
 var devices = await session.GetRingDevices();
 ```
 
-To retrieve all recorded doorbell events:
+To retrieve all recorded doorbell events including the recording Ids which you will need for the next two samples:
 
 ```C#
 var doorbotHistory = await session.GetDoorbotsHistory();
 ```
 
-To save a recording directly to your disk:
+To save a recording directly to your disk (use GetDoorbotsHistory to get the Id):
 
 ```C#
 await session.GetDoorbotHistoryRecording("6000000004618901011", "c:\\temp\\recording.mp4");
 ```
 
-To share a recording:
+To share a recording (use GetDoorbotsHistory to get the Id):
 
 ```C#
 await session.ShareRecording("6000000004618901011");
 ```
 
-To retrieve the latest available snapshot from a doorbot and save it to disk:
+To retrieve the latest available snapshot from a doorbot and save it to disk (use GetRingDevices to get the Id):
 
 ```C#
 await session.GetLatestSnapshot(1111111, "c:\\temp\\snapshot.jpg");
 ```
 
-To force a new snapshot to be taken from a doorbot:
+To force a new snapshot to be taken from a doorbot (use GetRingDevices to get the Id):
 
 ```C#
 await session.UpdateSnapshot(1111111);
 ```
 
-To retrieve the date and time at which the last snapshot was taken from a doorbot:
+To retrieve the date and time at which the last snapshot was taken from a doorbot (use GetRingDevices to get the Id):
 
 ```C#
 var timestamps = await session.GetDoorbotSnapshotTimestamp(1111111);
