@@ -14,12 +14,17 @@
 [forks]:https://github.com/koenzomers/RingApi/network
 [issues]:https://github.com/koenzomers/RingApi/issues
 
-This library for C# compiled against .NET Standard will allow you to easily communicate with the Ring API and retrieve details about your Ring doorbells and Ring chimes.
+This library for C# compiled against .NET 6 will allow you to easily communicate with the Ring API and retrieve details about your Ring doorbells and Ring chimes.
 
 If you're just looking for a tool to download your Ring recordings, [go here instead](https://github.com/KoenZomers/RingRecordingDownload).
 If you're looking for a tool to download snapshots from your Ring cameras, [go here](https://github.com/KoenZomers/RingSnapshotDownload).
 
 ## Version History
+
+0.4.4.0 - released September 14, 2022
+
+- Compiled against .NET 6
+- Switched to .NET JSON instead of NewtonSoft JSON
 
 0.4.3.2 - released April 29, 2020
 

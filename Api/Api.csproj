@@ -1,21 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>KoenZomers.Ring.Api</RootNamespace>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\KoenZomers.Ring.Api.snk</AssemblyOriginatorKeyFile>
     <AssemblyName>KoenZomers.Ring.Api</AssemblyName>
-    <Version>0.4.3.2</Version>
+    <Version>0.4.4.0</Version>
     <Company>Koen Zomers</Company>
     <Authors>Koen Zomers</Authors>
-    <Description>API in .Net Standard to communicate with the Ring Doorbell service</Description>
+    <Description>API in .NET to communicate with the Ring Doorbell service</Description>
     <PackageProjectUrl>https://github.com/KoenZomers/RingApi</PackageProjectUrl>
-    <AssemblyVersion>0.4.3.2</AssemblyVersion>
-    <PackageReleaseNotes>- Bugfix in GetDoorbotsHistory throwing a NullReferenceException when the Ring API would return an empty result</PackageReleaseNotes>
+    <AssemblyVersion>0.4.4.0</AssemblyVersion>
+    <PackageReleaseNotes>- Compiled against .NET 6
+- Switched to .NET JSON instead of NewtonSoft JSON</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Copyright>Koen Zomers</Copyright>
-    <FileVersion>0.4.3.2</FileVersion>
+    <FileVersion>0.4.4.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>

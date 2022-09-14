@@ -1,10 +1,3 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Configuration;
-using System.Threading.Tasks;
-using System.IO;
-using System.Linq;
-
 namespace KoenZomers.Ring.UnitTest
 {
     [TestClass]
@@ -26,8 +19,8 @@ namespace KoenZomers.Ring.UnitTest
         public static string TwoFactorAuthenticationToken
         {
             get { return ConfigurationManager.AppSettings["TwoFactorAuthenticationToken"]; }
-            set 
-            { 
+            set
+            {
                 var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 if (configFile.AppSettings.Settings["TwoFactorAuthenticationToken"] != null)
                 {
@@ -47,8 +40,8 @@ namespace KoenZomers.Ring.UnitTest
         public static string RefreshToken
         {
             get { return ConfigurationManager.AppSettings["RingRefreshToken"]; }
-            set 
-            { 
+            set
+            {
                 var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 if (configFile.AppSettings.Settings["RingRefreshToken"] != null)
                 {
@@ -85,7 +78,7 @@ namespace KoenZomers.Ring.UnitTest
                 try
                 {
                     authResult = await session.Authenticate(twoFactorAuthCode: TwoFactorAuthenticationToken);
-                    
+
                     if (!string.IsNullOrEmpty(TwoFactorAuthenticationToken))
                     {
                         // Clear the configured two factor authentication code in the configuration file after we've used it once as it won't be valid anymore next time
@@ -203,7 +196,7 @@ namespace KoenZomers.Ring.UnitTest
                 Assert.Inconclusive("There are no Ring doorbots available under this account to perform this test with");
                 return;
             }
-            
+
             // Take the first doorbot to retrieve the historical items for
             var doorbot = devices.Doorbots.Count > 0 ? devices.Doorbots[0] : devices.AuthorizedDoorbots[0];
 
@@ -302,7 +295,7 @@ namespace KoenZomers.Ring.UnitTest
         public async Task ShareRecordingTest()
         {
             if (!IsSessionActive()) return;
-            
+
             var doorbotHistory = await session.GetDoorbotsHistory(limit: 1);
 
             Assert.IsTrue(doorbotHistory.Count > 0, "No doorbot history events were found");
@@ -320,11 +313,11 @@ namespace KoenZomers.Ring.UnitTest
 
             var devices = await session.GetRingDevices();
             Assert.IsTrue(devices != null, "Unable to retrieve Ring devices");
-            Assert.IsTrue(devices.AuthorizedDoorbots != null && devices.AuthorizedDoorbots.Count > 0, "Retrieved Ring devices do not contain any doorbots");
+            Assert.IsTrue((devices.AuthorizedDoorbots != null && devices.AuthorizedDoorbots.Count > 0) || (devices.Doorbots != null && devices.Doorbots.Count > 0), "Retrieved Ring devices do not contain any doorbots");
 
             var tempFilePath = Path.GetTempFileName();
 
-            await session.GetLatestSnapshot(devices.AuthorizedDoorbots[0], tempFilePath);
+            await session.GetLatestSnapshot(devices.AuthorizedDoorbots?.Count > 0 ? devices.AuthorizedDoorbots[0] : devices.Doorbots[0], tempFilePath);
 
             File.Delete(tempFilePath);
         }
@@ -339,9 +332,9 @@ namespace KoenZomers.Ring.UnitTest
 
             var devices = await session.GetRingDevices();
             Assert.IsTrue(devices != null, "Unable to retrieve Ring devices");
-            Assert.IsTrue(devices.AuthorizedDoorbots != null && devices.AuthorizedDoorbots.Count > 0, "Retrieved Ring devices do not contain any doorbots");
+            Assert.IsTrue((devices.AuthorizedDoorbots != null && devices.AuthorizedDoorbots.Count > 0) || (devices.Doorbots != null && devices.Doorbots.Count > 0), "Retrieved Ring devices do not contain any doorbots");
 
-            await session.UpdateSnapshot(devices.AuthorizedDoorbots[0]);
+            await session.UpdateSnapshot((devices.AuthorizedDoorbots?.Count > 0 ? devices.AuthorizedDoorbots : devices.Doorbots)[0]);
         }
 
         /// <summary>
@@ -354,9 +347,9 @@ namespace KoenZomers.Ring.UnitTest
 
             var devices = await session.GetRingDevices();
             Assert.IsTrue(devices != null, "Unable to retrieve Ring devices");
-            Assert.IsTrue(devices.AuthorizedDoorbots != null && devices.AuthorizedDoorbots.Count > 0, "Retrieved Ring devices do not contain any doorbots");
+            Assert.IsTrue((devices.AuthorizedDoorbots != null && devices.AuthorizedDoorbots.Count > 0) || (devices.Doorbots != null && devices.Doorbots.Count > 0), "Retrieved Ring devices do not contain any doorbots");
 
-            var doorbotSnapshotTimestamps = await session.GetDoorbotSnapshotTimestamp(devices.AuthorizedDoorbots[0]);
+            var doorbotSnapshotTimestamps = await session.GetDoorbotSnapshotTimestamp((devices.AuthorizedDoorbots?.Count > 0 ? devices.AuthorizedDoorbots : devices.Doorbots)[0]);
 
             Assert.IsTrue(doorbotSnapshotTimestamps.Timestamp.Count > 0, "No timestamps were returned for the doorbot");
             Assert.IsTrue(doorbotSnapshotTimestamps.Timestamp[0].Timestamp.HasValue, "Unable to define the date and time for the last snapshot of the doorbot");
@@ -373,7 +366,7 @@ namespace KoenZomers.Ring.UnitTest
                 Assert.Inconclusive("Test can't be done as there's no active session");
                 return false;
             }
-            
+
             return true;
         }
     }
