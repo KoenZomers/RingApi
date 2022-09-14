@@ -3,6 +3,7 @@
 [![stars badge]][stars]
 [![forks badge]][forks]
 [![issues badge]][issues]
+[![Continuous Integration Build](https://github.com/KoenZomers/RingApi/actions/workflows/dotnetcore.yml/badge.svg)](https://github.com/KoenZomers/RingApi/actions/workflows/dotnetcore.yml)
 
 [licence badge]:https://img.shields.io/badge/license-MIT-blue.svg
 [stars badge]:https://img.shields.io/github/stars/koenzomers/RingApi.svg
