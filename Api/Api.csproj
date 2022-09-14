@@ -12,8 +12,11 @@
     <Description>API in .NET to communicate with the Ring Doorbell service</Description>
     <PackageProjectUrl>https://github.com/KoenZomers/RingApi</PackageProjectUrl>
     <AssemblyVersion>0.5.0.0</AssemblyVersion>
-    <PackageReleaseNotes>- Compiled against .NET 6
-- Switched to .NET JSON instead of NewtonSoft JSON</PackageReleaseNotes>
+    <PackageReleaseNotes>
+		- Replaced obsolete method of working with HTTP requests with modern method
+		- Rebuild code to avoid port exhaustion potentially causing random crashed when used in a loop
+		- Code is not fully backwards compatible. You may need to update your code if you upgrade to this version.
+	</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Copyright>Koen Zomers</Copyright>
     <FileVersion>0.5.0.0</FileVersion>

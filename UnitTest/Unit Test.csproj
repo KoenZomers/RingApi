@@ -37,7 +37,7 @@
   </ItemGroup>
 	<Target Name="CopyConfig" AfterTargets="Build">
 		<ItemGroup>
-			<ConfigFile Include="$(OutDir)App.config" />
+			<ConfigFile Include="$(ProjectDir)App.config" />
 		</ItemGroup>
 		<Copy
 			SourceFiles="@(ConfigFile)"
