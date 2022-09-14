@@ -21,12 +21,12 @@ If you're looking for a tool to download snapshots from your Ring cameras, [go h
 
 ## Version History
 
-0.4.4.0 - released September 14, 2022
+[0.4.4.0](https://www.nuget.org/packages/KoenZomers.Ring.Api/0.4.4) - released September 14, 2022
 
 - Compiled against .NET 6
-- Switched to .NET JSON instead of NewtonSoft JSON
+- Switched to .NET JSON instead of NewtonSoft JSON. Note that I had to change the types of some properties to become nullable and some to become longs instead of strings, so it might require some changes in your code as well.
 
-0.4.3.2 - released April 29, 2020
+[0.4.3.2](https://www.nuget.org/packages/KoenZomers.Ring.Api/0.4.3.2) - released April 29, 2020
 
 - Bugfix in `GetDoorbotsHistory` throwing a NullReferenceException when the Ring API would return an empty result
 
