@@ -41,7 +41,8 @@
 		</ItemGroup>
 		<Copy
 			SourceFiles="@(ConfigFile)"
-			DestinationFiles="$(OutDir)testhost.dll.config" />
+			DestinationFiles="$(OutDir)testhost.dll.config"
+			SkipUnchangedFiles="true" />
 	</Target>
 
 </Project>
