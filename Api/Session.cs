@@ -655,6 +655,7 @@ namespace KoenZomers.Ring.Api
             using var stream = await GetLatestSnapshot(doorbotId);
             using var fileStream = File.Create(saveAs);
 
+            stream.Seek(0, SeekOrigin.Begin);
             await stream.CopyToAsync(fileStream);
         }
 
