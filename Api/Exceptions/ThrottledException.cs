@@ -11,7 +11,7 @@ namespace KoenZomers.Ring.Api.Exceptions
         {
         }
 
-        public ThrottledException(System.Net.WebException innerException) : base("The request has been denied by Ring due to too many requests. Try again in a few minutes.", innerException)
+        public ThrottledException(Exception innerException) : base("The request has been denied by Ring due to too many requests. Try again in a few minutes.", innerException)
         {
         }
     }

@@ -16,7 +16,7 @@ namespace KoenZomers.Ring.Api.Exceptions
         {
         }
 
-        public TwoFactorAuthenticationIncorrectException(System.Net.WebException innerException) : base(errorMessage, innerException)
+        public TwoFactorAuthenticationIncorrectException(Exception innerException) : base(errorMessage, innerException)
         {
         }
     }

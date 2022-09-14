@@ -27,7 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Api .NET Standard\Api.csproj" />
     <ProjectReference Include="..\Api\Api.csproj" />
   </ItemGroup>
 

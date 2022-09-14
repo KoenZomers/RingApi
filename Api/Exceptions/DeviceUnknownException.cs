@@ -11,6 +11,10 @@ namespace KoenZomers.Ring.Api.Exceptions
         /// The error message to return
         /// </summary>
         private const string errorMessage = "The Ring device with Id '{0}' could not be found";
+        
+        public DeviceUnknownException() : base(string.Format(errorMessage, "unknown"))
+        {
+        }
 
         public DeviceUnknownException(int? ringDeviceId) : base(string.Format(errorMessage, ringDeviceId.HasValue ? ringDeviceId.Value.ToString() : "unknown"))
         {

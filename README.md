@@ -21,6 +21,12 @@ If you're looking for a tool to download snapshots from your Ring cameras, [go h
 
 ## Version History
 
+[0.5.0.0](https://www.nuget.org/packages/KoenZomers.Ring.Api/0.4.4) - released September 14, 2022
+
+- Replaced obsolete method of working with HTTP requests with modern method
+- Rebuild code to avoid port exhaustion potentially causing random crashed when used in a loop
+- Code is not fully backwards compatible. You may need to update your code if you upgrade to this version.
+
 [0.4.4.0](https://www.nuget.org/packages/KoenZomers.Ring.Api/0.4.4) - released September 14, 2022
 
 - Compiled against .NET 6

@@ -1,3 +1,5 @@
+using System;
+
 namespace KoenZomers.Ring.UnitTest
 {
     [TestClass]
@@ -6,19 +8,25 @@ namespace KoenZomers.Ring.UnitTest
         /// <summary>
         /// Username to use to connect to the Ring API
         /// </summary>
+#pragma warning disable CS8603 // Possible null reference return.
         public static string Username => ConfigurationManager.AppSettings["RingUsername"];
+#pragma warning restore CS8603 // Possible null reference return.
 
         /// <summary>
         /// Password to use to connect to the Ring API
         /// </summary>
+#pragma warning disable CS8603 // Possible null reference return.
         public static string Password => ConfigurationManager.AppSettings["RingPassword"];
+#pragma warning restore CS8603 // Possible null reference return.
 
         /// <summary>
         /// Two factor authentication token to use to connect to the Ring API
         /// </summary>
         public static string TwoFactorAuthenticationToken
         {
+#pragma warning disable CS8603 // Possible null reference return.
             get { return ConfigurationManager.AppSettings["TwoFactorAuthenticationToken"]; }
+#pragma warning restore CS8603 // Possible null reference return.
             set
             {
                 var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
@@ -39,7 +47,9 @@ namespace KoenZomers.Ring.UnitTest
         /// </summary>
         public static string RefreshToken
         {
+#pragma warning disable CS8603 // Possible null reference return.
             get { return ConfigurationManager.AppSettings["RingRefreshToken"]; }
+#pragma warning restore CS8603 // Possible null reference return.
             set
             {
                 var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
@@ -59,7 +69,7 @@ namespace KoenZomers.Ring.UnitTest
         /// <summary>
         /// Session set up by the initializer and used by the Unit Tests to perform actions against the Ring API
         /// </summary>
-        public static Api.Session session;
+        public static Api.Session? session;
 
         /// <summary>
         /// Prepares the Unit Test by setting up a session to Ring
@@ -74,7 +84,7 @@ namespace KoenZomers.Ring.UnitTest
                 // No refresh token available, try to authenticate with the credentials from the config file
                 session = new Api.Session(Username, Password);
 
-                Api.Entities.Session authResult = null;
+                Api.Entities.Session? authResult = null;
                 try
                 {
                     authResult = await session.Authenticate(twoFactorAuthCode: TwoFactorAuthenticationToken);
@@ -93,7 +103,7 @@ namespace KoenZomers.Ring.UnitTest
                 {
                     Assert.Fail("The two factor authentication token provided in the config file as 'TwoFactorAuthenticationToken' is invalid or has expired.");
                 }
-                Assert.IsFalse(authResult == null || string.IsNullOrEmpty(authResult.Profile.AuthenticationToken), "Failed to authenticate");
+                Assert.IsFalse(authResult == null || string.IsNullOrEmpty(authResult.Profile?.AuthenticationToken), "Failed to authenticate");
 
                 // Store the refresh token for subsequent runs
                 RefreshToken = session.OAuthToken.RefreshToken;
@@ -111,7 +121,7 @@ namespace KoenZomers.Ring.UnitTest
         /// Test the scenario where the authentication would fail
         /// </summary>
         [TestMethod]
-        [ExpectedException(typeof(System.Net.WebException))]
+        [ExpectedException(typeof(Api.Exceptions.AuthenticationFailedException))]
         public async Task AuthenticateFailTest()
         {
             var session = new Api.Session("test@test.com", "someinvalidpassword");
@@ -126,6 +136,8 @@ namespace KoenZomers.Ring.UnitTest
         public async Task AuthenticateWithRefreshTokenSuccessTest()
         {
             if (!IsSessionActive()) return;
+
+            Assert.IsNotNull(session, "No active session available");
 
             // Request a new authenticated session based on the RefreshToken
             var refreshedSession = await Api.Session.GetSessionByRefreshToken(session.OAuthToken.RefreshToken);
@@ -151,6 +163,8 @@ namespace KoenZomers.Ring.UnitTest
         {
             if (!IsSessionActive()) return;
 
+            Assert.IsNotNull(session, "No active session available");
+
             var devices = await session.GetRingDevices();
             Assert.IsTrue(devices.Chimes.Count > 0 || devices.Doorbots.Count > 0 || devices.AuthorizedDoorbots.Count > 0 || devices.StickupCams.Count > 0, "No doorbots, stickup cams and/or chimes returned");
         }
@@ -174,6 +188,8 @@ namespace KoenZomers.Ring.UnitTest
         {
             if (!IsSessionActive()) return;
 
+            Assert.IsNotNull(session, "No active session available");
+
             var doorbotHistory = await session.GetDoorbotsHistory();
             Assert.IsTrue(doorbotHistory.Count > 0, "No doorbot history items returned");
             Assert.IsTrue(doorbotHistory.Count == 20, $"{doorbotHistory.Count} doorbot history items returned while 20 were expected");
@@ -186,6 +202,8 @@ namespace KoenZomers.Ring.UnitTest
         public async Task GetDoorbotsHistoryForSpecificDoorbotTest()
         {
             if (!IsSessionActive()) return;
+
+            Assert.IsNotNull(session, "No active session available");
 
             // Get the available Ring devices
             var devices = await session.GetRingDevices();
@@ -215,6 +233,8 @@ namespace KoenZomers.Ring.UnitTest
         {
             if (!IsSessionActive()) return;
 
+            Assert.IsNotNull(session, "No active session available");
+
             // Try getting the historical items for the a doorbot that does not exist
             await session.GetDoorbotsHistory(doorbotId: 1234567);
         }
@@ -226,6 +246,8 @@ namespace KoenZomers.Ring.UnitTest
         public async Task GetDoorbotsHistoryWithLimitTest()
         {
             if (!IsSessionActive()) return;
+
+            Assert.IsNotNull(session, "No active session available");
 
             var limit = 250;
 
@@ -242,6 +264,8 @@ namespace KoenZomers.Ring.UnitTest
         {
             if (!IsSessionActive()) return;
 
+            Assert.IsNotNull(session, "No active session available");
+
             var startDate = DateTime.Now.AddDays(-2);
             var endDate = DateTime.Now.AddDays(-1);
 
@@ -257,6 +281,8 @@ namespace KoenZomers.Ring.UnitTest
         public async Task GetDoorbotsHistoryRecordingByIdTest()
         {
             if (!IsSessionActive()) return;
+
+            Assert.IsNotNull(session, "No active session available");
 
             var doorbotHistory = await session.GetDoorbotsHistory();
 
@@ -277,6 +303,8 @@ namespace KoenZomers.Ring.UnitTest
         {
             if (!IsSessionActive()) return;
 
+            Assert.IsNotNull(session, "No active session available");
+
             var doorbotHistory = await session.GetDoorbotsHistory(limit: 1);
 
             Assert.IsTrue(doorbotHistory.Count > 0, "No doorbot history events were found");
@@ -296,6 +324,8 @@ namespace KoenZomers.Ring.UnitTest
         {
             if (!IsSessionActive()) return;
 
+            Assert.IsNotNull(session, "No active session available");
+
             var doorbotHistory = await session.GetDoorbotsHistory(limit: 1);
 
             Assert.IsTrue(doorbotHistory.Count > 0, "No doorbot history events were found");
@@ -310,6 +340,8 @@ namespace KoenZomers.Ring.UnitTest
         public async Task DownloadLatestSnapshotTest()
         {
             if (!IsSessionActive()) return;
+
+            Assert.IsNotNull(session, "No active session available");
 
             var devices = await session.GetRingDevices();
             Assert.IsTrue(devices != null, "Unable to retrieve Ring devices");
@@ -329,6 +361,8 @@ namespace KoenZomers.Ring.UnitTest
         public async Task UpdateSnapshotTest()
         {
             if (!IsSessionActive()) return;
+            
+            Assert.IsNotNull(session, "No active session available");
 
             var devices = await session.GetRingDevices();
             Assert.IsTrue(devices != null, "Unable to retrieve Ring devices");
@@ -344,6 +378,8 @@ namespace KoenZomers.Ring.UnitTest
         public async Task GetSnapshotTimestampTest()
         {
             if (!IsSessionActive()) return;
+
+            Assert.IsNotNull(session, "No active session available");
 
             var devices = await session.GetRingDevices();
             Assert.IsTrue(devices != null, "Unable to retrieve Ring devices");
