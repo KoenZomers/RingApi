@@ -35,9 +35,13 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="if $(ConfigurationName) == Debug copy App.config $(OutDir)testhost.dll.config" />
-  </Target>
+	<Target Name="CopyConfig" AfterTargets="Build">
+		<ItemGroup>
+			<ConfigFile Include="$(OutDir)App.config" />
+		</ItemGroup>
+		<Copy
+			SourceFiles="@(ConfigFile)"
+			DestinationFiles="$(OutDir)testhost.dll.config" />
+	</Target>
 
 </Project>
