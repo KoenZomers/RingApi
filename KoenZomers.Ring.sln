@@ -5,8 +5,8 @@ VisualStudioVersion = 17.3.32825.248
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E74CD4FE-CB4A-4968-B282-C0118BBF63DA}"
 	ProjectSection(SolutionItems) = preProject
-		.github\workflows\dotnetcore.yml = .github\workflows\dotnetcore.yml
 		KoenZomers.Ring.Api.snk = KoenZomers.Ring.Api.snk
+		.github\workflows\cibuild.yml = .github\workflows\cibuild.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{12C92BB7-7D1A-49F5-AD96-2101FEE61C8E}"
