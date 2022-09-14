@@ -37,7 +37,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="if exists App.config copy App.config $(OutDir)testhost.dll.config" />
+    <Exec Command="if $(ConfigurationName) == Debug copy App.config $(OutDir)testhost.dll.config" />
   </Target>
 
 </Project>
