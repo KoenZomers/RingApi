@@ -1,13 +1,16 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace KoenZomers.Ring.Api.Entities
 {
     public class HumanDetectionConfidence
     {
-        [JsonProperty("day", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("day")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+
         public double? Day { get; set; }
 
-        [JsonProperty("night", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("night")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public double? Night { get; set; }
     }
 }

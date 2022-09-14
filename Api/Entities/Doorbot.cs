@@ -1,64 +1,64 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace KoenZomers.Ring.Api.Entities
 {
     public class Doorbot
     {
-        [JsonProperty(PropertyName = "id")]
+        [JsonPropertyName("id")]
         public int Id { get; set; }
 
-        [JsonProperty(PropertyName = "description")]
+        [JsonPropertyName("description")]
         public string Description { get; set; }
 
-        [JsonProperty(PropertyName = "device_id")]
+        [JsonPropertyName("device_id")]
         public string DeviceId { get; set; }
 
-        [JsonProperty(PropertyName = "time_zone")]
+        [JsonPropertyName("time_zone")]
         public string TimeZone { get; set; }
 
-        [JsonProperty(PropertyName = "subscribed")]
-        public bool Subscribed { get; set; }
+        [JsonPropertyName("subscribed")]
+        public bool? Subscribed { get; set; }
 
-        [JsonProperty(PropertyName = "subscribed_motions")]
-        public bool SubscribedMotions { get; set; }
+        [JsonPropertyName("subscribed_motions")]
+        public bool? SubscribedMotions { get; set; }
 
-        [JsonProperty(PropertyName = "battery_life")]
-        public int BatteryLife { get; set; }
+        [JsonPropertyName("battery_life")]
+        public int? BatteryLife { get; set; }
 
-        [JsonProperty(PropertyName = "external_connection")]
-        public bool ExternalConnection { get; set; }
+        [JsonPropertyName("external_connection")]
+        public bool? ExternalConnection { get; set; }
 
-        [JsonProperty(PropertyName = "firmware_version")]
+        [JsonPropertyName("firmware_version")]
         public string FirmwareVersion { get; set; }
 
-        [JsonProperty(PropertyName = "kind")]
+        [JsonPropertyName("kind")]
         public string Kind { get; set; }
 
-        [JsonProperty(PropertyName = "latitude")]
-        public double Latitude { get; set; }
+        [JsonPropertyName("latitude")]
+        public double? Latitude { get; set; }
 
-        [JsonProperty(PropertyName = "longitude")]
-        public double Longitude { get; set; }
+        [JsonPropertyName("longitude")]
+        public double? Longitude { get; set; }
 
-        [JsonProperty(PropertyName = "address")]
+        [JsonPropertyName("address")]
         public string Address { get; set; }
 
-        [JsonProperty(PropertyName = "features")]
+        [JsonPropertyName("features")]
         public DoorbotFeatures Features { get; set; }
 
-        [JsonProperty(PropertyName = "owned")]
-        public bool Owned { get; set; }
+        [JsonPropertyName("owned")]
+        public bool? Owned { get; set; }
 
-        [JsonProperty(PropertyName = "alerts")]
+        [JsonPropertyName("alerts")]
         public DoorbotAlerts Alerts { get; set; }
 
-        [JsonProperty(PropertyName = "motion_snooze")]
+        [JsonPropertyName("motion_snooze")]
         public object MotionSnooze { get; set; }
 
-        [JsonProperty(PropertyName = "stolen")]
-        public bool Stolen { get; set; }
+        [JsonPropertyName("stolen")]
+        public bool? Stolen { get; set; }
 
-        [JsonProperty(PropertyName = "owner")]
+        [JsonPropertyName("owner")]
         public Owner Owner { get; set; }
     }
 }

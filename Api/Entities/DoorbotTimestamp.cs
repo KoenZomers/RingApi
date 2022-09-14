@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using System;
 
 namespace KoenZomers.Ring.Api.Entities
@@ -11,13 +11,13 @@ namespace KoenZomers.Ring.Api.Entities
         /// <summary>
         /// The id of the doorbot to which this timestamp relates
         /// </summary>
-        [JsonProperty(PropertyName = "doorbot_id")]
-        public string DoorbotId { get; set; }
+        [JsonPropertyName("doorbot_id")]
+        public long? DoorbotId { get; set; }
 
         /// <summary>
         /// The timestamp in seconds since January 1, 1970
         /// </summary>
-        [JsonProperty(PropertyName = "timestamp")]
+        [JsonPropertyName("timestamp")]
         public long? TimestampEpoch { get; set; }
 
         /// <summary>

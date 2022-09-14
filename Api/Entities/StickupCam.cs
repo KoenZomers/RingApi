@@ -1,92 +1,120 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using System;
 
 namespace KoenZomers.Ring.Api.Entities
 {
     public class StickupCam
     {
-        [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("id")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public long? Id { get; set; }
 
-        [JsonProperty("description", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("description")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string Description { get; set; }
 
-        [JsonProperty("device_id", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("device_id")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string DeviceId { get; set; }
 
-        [JsonProperty("time_zone", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("time_zone")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string TimeZone { get; set; }
 
-        [JsonProperty("subscribed", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("subscribed")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public bool? Subscribed { get; set; }
 
-        [JsonProperty("subscribed_motions", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("subscribed_motions")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public bool? SubscribedMotions { get; set; }
 
-        [JsonProperty("battery_life", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("battery_life")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public long? BatteryLife { get; set; }
 
-        [JsonProperty("external_connection", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("external_connection")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public bool? ExternalConnection { get; set; }
 
-        [JsonProperty("firmware_version", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("firmware_version")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string FirmwareVersion { get; set; }
 
-        [JsonProperty("kind", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("kind")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string Kind { get; set; }
 
-        [JsonProperty("latitude", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("latitude")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public long? Latitude { get; set; }
 
-        [JsonProperty("longitude", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("longitude")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public long? Longitude { get; set; }
 
-        [JsonProperty("address", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("address")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string Address { get; set; }
 
-        [JsonProperty("settings", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("settings")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public StickupCamSettings Settings { get; set; }
 
-        [JsonProperty("features", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("features")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public StickupCamFeatures Features { get; set; }
 
-        [JsonProperty("owned", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("owned")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public bool? Owned { get; set; }
 
-        [JsonProperty("alerts", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("alerts")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public StickupCamAlerts Alerts { get; set; }
 
-        [JsonProperty("motion_snooze", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("motion_snooze")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string MotionSnooze { get; set; }
 
-        [JsonProperty("stolen", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("stolen")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public bool? Stolen { get; set; }
 
-        [JsonProperty("location_id", NullValueHandling = NullValueHandling.Ignore)]
-        public Guid LocationId { get; set; }
+        [JsonPropertyName("location_id")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public Guid? LocationId { get; set; }
 
-        [JsonProperty("ring_id", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("ring_id")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string RingId { get; set; }
 
-        [JsonProperty("owner", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("owner")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public Owner Owner { get; set; }
 
-        [JsonProperty("battery_life_2", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("battery_life_2")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public long? BatteryLife2 { get; set; }
 
-        [JsonProperty("battery_voltage", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("battery_voltage")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public long? BatteryVoltage { get; set; }
 
-        [JsonProperty("battery_voltage_2", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("battery_voltage_2")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public long? BatteryVoltage2 { get; set; }
 
-        [JsonProperty("led_status", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("led_status")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public DeviceStatus LedStatus { get; set; }
 
-        [JsonProperty("siren_status", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("siren_status")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public DeviceStatus SirenStatus { get; set; }
 
-        [JsonProperty("night_mode", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("night_mode")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public long? NightMode { get; set; }
     }
 }

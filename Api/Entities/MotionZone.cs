@@ -1,31 +1,39 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace KoenZomers.Ring.Api.Entities
 {
     public class MotionZone
     {
-        [JsonProperty("enable_audio", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("enable_audio")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public bool? EnableAudio { get; set; }
 
-        [JsonProperty("active_motion_filter", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("active_motion_filter")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public long? ActiveMotionFilter { get; set; }
 
-        [JsonProperty("sensitivity", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("sensitivity")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public long? Sensitivity { get; set; }
 
-        [JsonProperty("advanced_object_settings", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("advanced_object_settings")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public AdvancedObjectSettings AdvancedObjectSettings { get; set; }
 
-        [JsonProperty("zone1", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("zone1")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public Zone Zone1 { get; set; }
 
-        [JsonProperty("zone2", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("zone2")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public Zone Zone2 { get; set; }
 
-        [JsonProperty("zone3", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("zone3")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public Zone Zone3 { get; set; }
 
-        [JsonProperty("pir_settings", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("pir_settings")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public PirSettings PirSettings { get; set; }
     }
 }

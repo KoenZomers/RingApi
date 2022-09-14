@@ -1,19 +1,19 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace KoenZomers.Ring.Api.Entities
 {
     public class Owner
     {
-        [JsonProperty(PropertyName = "id")]
+        [JsonPropertyName("id")]
         public int? Id { get; set; }
 
-        [JsonProperty(PropertyName = "first_name")]
+        [JsonPropertyName("first_name")]
         public string FirstName { get; set; }
 
-        [JsonProperty(PropertyName = "last_name")]
+        [JsonPropertyName("last_name")]
         public string LastName { get; set; }
 
-        [JsonProperty(PropertyName = "email")]
+        [JsonPropertyName("email")]
         public string Email { get; set; }
     }
 }

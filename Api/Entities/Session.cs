@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace KoenZomers.Ring.Api.Entities
 {
     public class Session
     {
-        [JsonProperty(PropertyName = "profile")]
+        [JsonPropertyName("profile")]
         public Profile Profile { get; set; }
     }
 }

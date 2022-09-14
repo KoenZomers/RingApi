@@ -1,37 +1,37 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace KoenZomers.Ring.Api.Entities
 {
     public class Profile
     {
-        [JsonProperty(PropertyName = "id")]
+        [JsonPropertyName("id")]
         public int Id { get; set; }
 
-        [JsonProperty(PropertyName = "email")]
+        [JsonPropertyName("email")]
         public string Email { get; set; }
 
-        [JsonProperty(PropertyName = "first_name")]
+        [JsonPropertyName("first_name")]
         public string FirstName { get; set; }
 
-        [JsonProperty(PropertyName = "last_name")]
+        [JsonPropertyName("last_name")]
         public string LastName { get; set; }
 
-        [JsonProperty(PropertyName = "phone_number")]
+        [JsonPropertyName("phone_number")]
         public object PhoneNumber { get; set; }
 
-        [JsonProperty(PropertyName = "authentication_token")]
+        [JsonPropertyName("authentication_token")]
         public string AuthenticationToken { get; set; }
 
-        [JsonProperty(PropertyName = "features")]
+        [JsonPropertyName("features")]
         public SessionFeatures Features { get; set; }
 
-        [JsonProperty(PropertyName = "app_brand")]
+        [JsonPropertyName("app_brand")]
         public string AppBrand { get; set; }
 
-        [JsonProperty(PropertyName = "user_flow")]
+        [JsonPropertyName("user_flow")]
         public string UserFlow { get; set; }
 
-        [JsonProperty(PropertyName = "explorer_program_terms")]
+        [JsonPropertyName("explorer_program_terms")]
         public string ExplorerProgramTerms { get; set; }
     }
 }

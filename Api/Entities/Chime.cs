@@ -1,55 +1,55 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace KoenZomers.Ring.Api.Entities
 {
     public class Chime
     {
-        [JsonProperty(PropertyName = "id")]
+        [JsonPropertyName("id")]
         public int Id { get; set; }
 
-        [JsonProperty(PropertyName = "description")]
+        [JsonPropertyName("description")]
         public string Description { get; set; }
 
-        [JsonProperty(PropertyName = "device_id")]
+        [JsonPropertyName("device_id")]
         public string DeviceId { get; set; }
 
-        [JsonProperty(PropertyName = "time_zone")]
+        [JsonPropertyName("time_zone")]
         public string TimeZone { get; set; }
 
-        [JsonProperty(PropertyName = "firmware_version")]
+        [JsonPropertyName("firmware_version")]
         public string FirmwareVersion { get; set; }
 
-        [JsonProperty(PropertyName = "kind")]
+        [JsonPropertyName("kind")]
         public string Kind { get; set; }
 
-        [JsonProperty(PropertyName = "latitude")]
+        [JsonPropertyName("latitude")]
         public double Latitude { get; set; }
 
-        [JsonProperty(PropertyName = "longitude")]
+        [JsonPropertyName("longitude")]
         public double Longitude { get; set; }
 
-        [JsonProperty(PropertyName = "address")]
+        [JsonPropertyName("address")]
         public string Address { get; set; }
 
-        [JsonProperty(PropertyName = "settings")]
+        [JsonPropertyName("settings")]
         public ChimeSettings Settings { get; set; }
 
-        [JsonProperty(PropertyName = "features")]
+        [JsonPropertyName("features")]
         public ChimeFeatures Features { get; set; }
 
-        [JsonProperty(PropertyName = "owned")]
+        [JsonPropertyName("owned")]
         public bool Owned { get; set; }
 
-        [JsonProperty(PropertyName = "alerts")]
+        [JsonPropertyName("alerts")]
         public ChimeAlerts Alerts { get; set; }
 
-        [JsonProperty(PropertyName = "do_not_disturb")]
+        [JsonPropertyName("do_not_disturb")]
         public DoNotDisturb DoNotDisturb { get; set; }
 
-        [JsonProperty(PropertyName = "stolen")]
+        [JsonPropertyName("stolen")]
         public bool Stolen { get; set; }
 
-        [JsonProperty(PropertyName = "owner")]
+        [JsonPropertyName("owner")]
         public Owner Owner { get; set; }
     }
 }

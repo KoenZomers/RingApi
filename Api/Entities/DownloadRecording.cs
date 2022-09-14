@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace KoenZomers.Ring.Api.Entities
 {
@@ -10,7 +10,7 @@ namespace KoenZomers.Ring.Api.Entities
         /// <summary>
         /// The URL where to download a recording from. If an empty string is returned, it means the Ring service is still preparing the download. Keep making the request until this returns an URL.
         /// </summary>
-        [JsonProperty(PropertyName = "url")]
+        [JsonPropertyName("url")]
         public string Url{ get; set; }
     }
 }

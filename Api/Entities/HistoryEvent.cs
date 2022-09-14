@@ -1,35 +1,35 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using System.Collections.Generic;
 
 namespace KoenZomers.Ring.Api.Entities
 {
     public class HistoryEvent
     {
-        [JsonProperty(PropertyName = "id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; }
 
-        [JsonProperty(PropertyName = "created_at")]
+        [JsonPropertyName("created_at")]
         public string CreatedAt { get; set; }
 
-        [JsonProperty(PropertyName = "answered")]
+        [JsonPropertyName("answered")]
         public bool Answered { get; set; }
 
-        [JsonProperty(PropertyName = "events")]
+        [JsonPropertyName("events")]
         public List<object> Events { get; set; }
 
-        [JsonProperty(PropertyName = "kind")]
+        [JsonPropertyName("kind")]
         public string Kind { get; set; }
 
-        [JsonProperty(PropertyName = "favorite")]
+        [JsonPropertyName("favorite")]
         public bool Favorite { get; set; }
 
-        [JsonProperty(PropertyName = "snapshot_url")]
+        [JsonPropertyName("snapshot_url")]
         public string SnapshotUrl { get; set; }
 
-        [JsonProperty(PropertyName = "recording")]
+        [JsonPropertyName("recording")]
         public DoorbotHistoryEventRecording Recording { get; set; }
 
-        [JsonProperty(PropertyName = "doorbot")]
+        [JsonPropertyName("doorbot")]
         public Doorbot Doorbot { get; set; }
     }
 }

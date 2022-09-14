@@ -1,22 +1,22 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace KoenZomers.Ring.Api.Entities
 {
     public class ChimeSettings
     {
-        [JsonProperty(PropertyName = "volume")]
+        [JsonPropertyName("volume")]
         public int Volume { get; set; }
 
-        [JsonProperty(PropertyName = "ding_audio_user_id")]
+        [JsonPropertyName("ding_audio_user_id")]
         public string DingAudioUserId { get; set; }
 
-        [JsonProperty(PropertyName = "ding_audio_id")]
+        [JsonPropertyName("ding_audio_id")]
         public string DingAudioId { get; set; }
 
-        [JsonProperty(PropertyName = "motion_audio_user_id")]
+        [JsonPropertyName("motion_audio_user_id")]
         public string MotionAudioUserId { get; set; }
 
-        [JsonProperty(PropertyName = "motion_audio_id")]
+        [JsonPropertyName("motion_audio_id")]
         public string MotionAudioId { get; set; }
     }
 }

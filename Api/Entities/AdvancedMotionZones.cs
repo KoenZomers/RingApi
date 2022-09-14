@@ -1,16 +1,16 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace KoenZomers.Ring.Api.Entities
 {
     public class AdvancedMotionZones
     {
-        [JsonProperty("zone1")]
+        [JsonPropertyName("zone1")]
         public Zone Zone1 { get; set; }
 
-        [JsonProperty("zone2")]
+        [JsonPropertyName("zone2")]
         public Zone Zone2 { get; set; }
 
-        [JsonProperty("zone3")]
+        [JsonPropertyName("zone3")]
         public Zone Zone3 { get; set; }
     }
 }

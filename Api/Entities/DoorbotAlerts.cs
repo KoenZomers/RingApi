@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace KoenZomers.Ring.Api.Entities
 {
     public class StickupCamAlerts
     {
-        [JsonProperty(PropertyName = "connection")]
+        [JsonPropertyName("connection")]
         public string Connection { get; set; }
     }
 }

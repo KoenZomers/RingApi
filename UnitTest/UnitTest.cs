@@ -264,7 +264,7 @@ namespace KoenZomers.Ring.UnitTest
 
             var tempFilePath = Path.GetTempFileName();
 
-            await session.GetDoorbotHistoryRecording(doorbotHistory[0].Id, tempFilePath);
+            await session.GetDoorbotHistoryRecording(doorbotHistory[0].Id.ToString(), tempFilePath);
 
             File.Delete(tempFilePath);
         }

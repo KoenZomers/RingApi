@@ -1,19 +1,23 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace KoenZomers.Ring.Api.Entities
 {
     public class PirSettings
     {
-        [JsonProperty("sensitivity1", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("sensitivity1")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public long? Sensitivity1 { get; set; }
 
-        [JsonProperty("sensitivity2", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("sensitivity2")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public long? Sensitivity2 { get; set; }
 
-        [JsonProperty("sensitivity3", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("sensitivity3")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public long? Sensitivity3 { get; set; }
 
-        [JsonProperty("zone_mask", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("zone_mask")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public long? ZoneMask { get; set; }
     }
 }

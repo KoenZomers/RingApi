@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace KoenZomers.Ring.Api.Entities
 {
     public class ChimeFeatures
     {
-        [JsonProperty(PropertyName = "ringtones_enabled")]
+        [JsonPropertyName("ringtones_enabled")]
         public bool RingtonesEnabled { get; set; }
     }
 }

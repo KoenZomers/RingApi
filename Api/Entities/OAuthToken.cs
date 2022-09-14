@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using System;
 
 namespace KoenZomers.Ring.Api.Entities
@@ -11,20 +11,20 @@ namespace KoenZomers.Ring.Api.Entities
         /// <summary>
         /// The OAuth access token that can be used as a Bearer token to communicate with the Ring API
         /// </summary>
-        [JsonProperty(PropertyName = "access_token")]
+        [JsonPropertyName("access_token")]
         public string AccessToken { get; set; }
 
         /// <summary>
         /// The type of OAuth token that was returned, typically bearer
         /// </summary>
-        [JsonProperty(PropertyName = "token_type")]
+        [JsonPropertyName("token_type")]
         public string TokenType { get; set; }
 
         private int _expiresInSeconds;
         /// <summary>
         /// Gets the amount of seconds after creation of this OAuth token after which it expires
         /// </summary>
-        [JsonProperty(PropertyName = "expires_in")]
+        [JsonPropertyName("expires_in")]
         public int ExpiresInSeconds
         {
             get { return _expiresInSeconds; }
@@ -39,19 +39,19 @@ namespace KoenZomers.Ring.Api.Entities
         /// <summary>
         /// The OAuth Refresh Token that can be used to get a new OAuth Access Token after it expires
         /// </summary>
-        [JsonProperty(PropertyName = "refresh_token")]
+        [JsonPropertyName("refresh_token")]
         public string RefreshToken { get; set; }
 
         /// <summary>
         /// Scope to which this OAuth token grants access, typically client
         /// </summary>
-        [JsonProperty(PropertyName = "scope")]
+        [JsonPropertyName("scope")]
         public string Scope { get; set; }
 
         /// <summary>
         /// Seconds since January 1, 1970 at indicating when this OAuth Token was created
         /// </summary>
-        [JsonProperty(PropertyName = "created_at")]
+        [JsonPropertyName("created_at")]
         public int CreatedAtTicks { get; set; }
 
         /// <summary>

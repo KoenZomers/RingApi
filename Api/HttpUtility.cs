@@ -7,7 +7,8 @@ using System;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace KoenZomers.Ring.Api
 {
@@ -243,7 +244,7 @@ namespace KoenZomers.Ring.Api
             var response = await SendRequest(url, httpMethod, bodyContent, bearerToken, timeout);
 
             // Try parsing the response to the type provided with this method
-            T responseEntity = JsonConvert.DeserializeObject<T>(response);
+            T responseEntity = JsonSerializer.Deserialize<T>(response);
             return responseEntity;
         }
 

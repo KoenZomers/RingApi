@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using System.Collections.Generic;
 
 namespace KoenZomers.Ring.Api.Entities
@@ -11,7 +11,7 @@ namespace KoenZomers.Ring.Api.Entities
         /// <summary>
         /// Collection of doorbot timestamps
         /// </summary>
-        [JsonProperty(PropertyName = "timestamps")]
+        [JsonPropertyName("timestamps")]
         public List<DoorbotTimestamp> Timestamp { get; set; }
     }
 }

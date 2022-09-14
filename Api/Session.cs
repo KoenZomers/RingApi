@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using System.IO;
 using System.Threading;
+using System.Text.Json;
+using KoenZomers.Ring.Api.Entities;
 
 namespace KoenZomers.Ring.Api
 {
@@ -49,15 +50,6 @@ namespace KoenZomers.Ring.Api
         /// OAuth Token for communicating with the Ring API
         /// </summary>
         public Entities.OAutToken OAuthToken { get; private set; }
-
-        #endregion
-
-        #region Fields
-
-        /// <summary>
-        /// Json Serializer Settings instance to use for deserializing Ring API responses
-        /// </summary>
-        private JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings { Error = (se, ev) => { ev.ErrorContext.Handled = true; } };
 
         #endregion
 
@@ -174,7 +166,7 @@ namespace KoenZomers.Ring.Api
 
 
             // Deserialize the JSON result into a typed object
-            OAuthToken = JsonConvert.DeserializeObject<Entities.OAutToken>(oAuthResponse);
+            OAuthToken = JsonSerializer.Deserialize<Entities.OAutToken>(oAuthResponse);
 
             // Construct the Form POST fields to send along with the session request
             var sessionFormFields = new Dictionary<string, string>
@@ -207,7 +199,7 @@ namespace KoenZomers.Ring.Api
                                                                 null);
 
             // Deserialize the JSON result into a typed object
-            var session = JsonConvert.DeserializeObject<Entities.Session>(sessionResponse);
+            var session = JsonSerializer.Deserialize<Entities.Session>(sessionResponse);
 
             return session;
         }
@@ -254,7 +246,7 @@ namespace KoenZomers.Ring.Api
 
 
                 // Deserialize the JSON result into a typed object
-                OAuthToken = JsonConvert.DeserializeObject<Entities.OAutToken>(oAuthResponse);
+                OAuthToken = JsonSerializer.Deserialize<Entities.OAutToken>(oAuthResponse);
             }
             catch(System.Net.WebException e)
             {
@@ -319,7 +311,7 @@ namespace KoenZomers.Ring.Api
 
             var response = await HttpUtility.GetContents(new Uri(RingApiBaseUrl, $"ring_devices"), AuthenticationToken);
             
-            var devices = JsonConvert.DeserializeObject<Entities.Devices>(response, _jsonSerializerSettings);
+            var devices = JsonSerializer.Deserialize<Entities.Devices>(response);
             return devices;
         }
 
@@ -351,7 +343,7 @@ namespace KoenZomers.Ring.Api
             }
 
             // Parse the result
-            var doorbotHistory = JsonConvert.DeserializeObject<List<Entities.DoorbotHistoryEvent>>(response, _jsonSerializerSettings);
+            var doorbotHistory = JsonSerializer.Deserialize<List<Entities.DoorbotHistoryEvent>>(response);
 
             // If no limit has been specified or the amount of items requested have been returned already, just return whatever has been returned by the API
             if (!limit.HasValue || doorbotHistory.Count >= limit.Value) return doorbotHistory;
@@ -371,7 +363,7 @@ namespace KoenZomers.Ring.Api
                 response = await HttpUtility.GetContents(new Uri(RingApiBaseUrl, $"doorbots/{(doorbotId.HasValue ? $"{doorbotId.Value}/" : "")}history?limit={remainingItems}&older_than={allHistory.Last().Id}"), AuthenticationToken);
 
                 // Parse the result
-                doorbotHistory = JsonConvert.DeserializeObject<List<Entities.DoorbotHistoryEvent>>(response, _jsonSerializerSettings);
+                doorbotHistory = JsonSerializer.Deserialize<List<Entities.DoorbotHistoryEvent>>(response);
 
                 // Add this next batch to the list with all the results
                 allHistory.AddRange(doorbotHistory);
@@ -431,7 +423,7 @@ namespace KoenZomers.Ring.Api
                 var response = await HttpUtility.GetContents(new Uri(RingApiBaseUrl, $"doorbots/{(doorbotId.HasValue ? $"{doorbotId.Value}/" : "")}history?limit={batchWithItems}{(doorbotHistory.Count == 0 ? "" : "&older_than=" + doorbotHistory.Last().Id)}"), AuthenticationToken);
 
                 // Parse the result
-                doorbotHistory = JsonConvert.DeserializeObject<List<Entities.DoorbotHistoryEvent>>(response, _jsonSerializerSettings);
+                doorbotHistory = JsonSerializer.Deserialize<List<Entities.DoorbotHistoryEvent>>(response);
 
                 // Add this next batch to the list with all the results which fit within the provided date span
                 allHistory.AddRange(doorbotHistory.Where(h => h.CreatedAtDateTime.HasValue && h.CreatedAtDateTime.Value >= startDate && (!endDate.HasValue || h.CreatedAtDateTime.Value <= endDate.Value)));
@@ -458,9 +450,15 @@ namespace KoenZomers.Ring.Api
         /// <exception cref="Exceptions.ThrottledException">Thrown when the web server indicates too many requests have been made (HTTP 429).</exception>
         /// <exception cref="Exceptions.TwoFactorAuthenticationIncorrectException">Thrown when the web server indicates the two-factor code was incorrect (HTTP 400).</exception>
         /// <exception cref="Exceptions.TwoFactorAuthenticationRequiredException">Thrown when the web server indicates two-factor authentication is required (HTTP 412).</exception>
-        public async Task<Stream> GetDoorbotHistoryRecording(Entities.DoorbotHistoryEvent doorbotHistoryEvent)
+        /// <exception cref="ArgumentNullException">Thrown when no historyEvent provided or one provided without an Id</exception>
+        public async Task<Stream> GetDoorbotHistoryRecording(DoorbotHistoryEvent doorbotHistoryEvent)
         {
-            return await GetDoorbotHistoryRecording(doorbotHistoryEvent.Id);
+            if (doorbotHistoryEvent == null || !doorbotHistoryEvent.Id.HasValue)
+            {
+                throw new ArgumentNullException(nameof(doorbotHistoryEvent));
+            }
+
+            return await GetDoorbotHistoryRecording(doorbotHistoryEvent.Id.Value.ToString());
         }
 
         /// <summary>
@@ -488,7 +486,7 @@ namespace KoenZomers.Ring.Api
                 var response = await HttpUtility.GetContents(downloadRequestUri, AuthenticationToken);
 
                 // Parse the result
-                downloadResult = JsonConvert.DeserializeObject<Entities.DownloadRecording>(response);
+                downloadResult = JsonSerializer.Deserialize<Entities.DownloadRecording>(response);
 
                 // If the Ring API returns an empty URL property, it means its still preparing the download on the server side. Just keep requesting the recording until it returns an URL.
                 if (!string.IsNullOrWhiteSpace(downloadResult.Url))
@@ -524,9 +522,15 @@ namespace KoenZomers.Ring.Api
         /// <exception cref="Exceptions.ThrottledException">Thrown when the web server indicates too many requests have been made (HTTP 429).</exception>
         /// <exception cref="Exceptions.TwoFactorAuthenticationIncorrectException">Thrown when the web server indicates the two-factor code was incorrect (HTTP 400).</exception>
         /// <exception cref="Exceptions.TwoFactorAuthenticationRequiredException">Thrown when the web server indicates two-factor authentication is required (HTTP 412).</exception>
+        /// <exception cref="ArgumentNullException">Thrown when no historyEvent provided or one provided without an Id</exception>
         public async Task GetDoorbotHistoryRecording(Entities.DoorbotHistoryEvent doorbotHistoryEvent, string saveAs)
         {
-            await GetDoorbotHistoryRecording(doorbotHistoryEvent.Id, saveAs);
+            if (doorbotHistoryEvent == null || !doorbotHistoryEvent.Id.HasValue)
+            {
+                throw new ArgumentNullException(nameof(doorbotHistoryEvent));
+            }
+
+            await GetDoorbotHistoryRecording(doorbotHistoryEvent.Id.Value.ToString(), saveAs);
         }
 
         /// <summary>
@@ -565,9 +569,15 @@ namespace KoenZomers.Ring.Api
         /// <exception cref="Exceptions.ThrottledException">Thrown when the web server indicates too many requests have been made (HTTP 429).</exception>
         /// <exception cref="Exceptions.TwoFactorAuthenticationIncorrectException">Thrown when the web server indicates the two-factor code was incorrect (HTTP 400).</exception>
         /// <exception cref="Exceptions.TwoFactorAuthenticationRequiredException">Thrown when the web server indicates two-factor authentication is required (HTTP 412).</exception>
+        /// <exception cref="ArgumentNullException">Thrown when no historyEvent provided or one provided without an Id</exception>
         public async Task<Uri> ShareRecording(Entities.DoorbotHistoryEvent historyEvent)
         {
-            return await ShareRecording(historyEvent.Id);
+            if(historyEvent == null || !historyEvent.Id.HasValue)
+            {
+                throw new ArgumentNullException(nameof(historyEvent));
+            }
+
+            return await ShareRecording(historyEvent.Id.Value.ToString());
         }
 
         /// <summary>
@@ -595,7 +605,7 @@ namespace KoenZomers.Ring.Api
                 var response = await HttpUtility.GetContents(downloadRequestUri, AuthenticationToken);
 
                 // Parse the result
-                shareResult = JsonConvert.DeserializeObject<Entities.SharedRecording>(response);
+                shareResult = JsonSerializer.Deserialize<Entities.SharedRecording>(response);
 
                 // If the Ring API returns an empty URL property, it means its still preparing the sharing on the server side. Just keep requesting the recording until it returns an URL.
                 if (!string.IsNullOrWhiteSpace(shareResult.WrapperUrl))

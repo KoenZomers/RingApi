@@ -1,58 +1,75 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace KoenZomers.Ring.Api.Entities
 {
     public class StickupCamSettings
     {
-        [JsonProperty("enable_vod", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("enable_vod")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public long? EnableVod { get; set; }
 
-        [JsonProperty("exposure_control", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("exposure_control")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public long? ExposureControl { get; set; }
 
-        [JsonProperty("motion_zones", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("motion_zones")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public MotionZone MotionZones { get; set; }
 
-        [JsonProperty("motion_snooze_preset_profile", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("motion_snooze_preset_profile")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string MotionSnoozePresetProfile { get; set; }
 
-        [JsonProperty("motion_snooze_presets", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("motion_snooze_presets")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string[] MotionSnoozePresets { get; set; }
 
-        [JsonProperty("live_view_preset_profile", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("live_view_preset_profile")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string LiveViewPresetProfile { get; set; }
 
-        [JsonProperty("live_view_presets", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("live_view_presets")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string[] LiveViewPresets { get; set; }
 
-        [JsonProperty("pir_sensitivity_1", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("pir_sensitivity_1")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public long? PirSensitivity1 { get; set; }
 
-        [JsonProperty("vod_suspended", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("vod_suspended")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public long? VodSuspended { get; set; }
 
-        [JsonProperty("doorbell_volume", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("doorbell_volume")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public long? DoorbellVolume { get; set; }
 
-        [JsonProperty("vod_status", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("vod_status")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string VodStatus { get; set; }
 
-        [JsonProperty("advanced_motion_detection_enabled", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("advanced_motion_detection_enabled")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public bool? AdvancedMotionDetectionEnabled { get; set; }
 
-        [JsonProperty("advanced_motion_zones", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("advanced_motion_zones")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public AdvancedMotionZones AdvancedMotionZones { get; set; }
 
-        [JsonProperty("advanced_motion_detection_human_only_mode", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("advanced_motion_detection_human_only_mode")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public bool? AdvancedMotionDetectionHumanOnlyMode { get; set; }
 
-        [JsonProperty("enable_audio_recording", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("enable_audio_recording")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public bool? EnableAudioRecording { get; set; }
 
-        [JsonProperty("light_settings", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("light_settings")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public LightSettings LightSettings { get; set; }
 
-        [JsonProperty("enable_white_leds", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("enable_white_leds")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public long? EnableWhiteLeds { get; set; }
     }
 }

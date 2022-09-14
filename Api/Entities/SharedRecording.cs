@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace KoenZomers.Ring.Api.Entities
 {
@@ -10,13 +10,13 @@ namespace KoenZomers.Ring.Api.Entities
         /// <summary>
         /// Not sure what it would contain. Returned an empty string during my tests.
         /// </summary>
-        [JsonProperty(PropertyName = "url")]
+        [JsonPropertyName("url")]
         public string Url{ get; set; }
 
         /// <summary>
         /// The URL where to download a shared recording from
         /// </summary>
-        [JsonProperty(PropertyName = "wrapper_url")]
+        [JsonPropertyName("wrapper_url")]
         public string WrapperUrl { get; set; }
     }
 }

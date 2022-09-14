@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using System;
 using System.Collections.Generic;
 
@@ -9,13 +9,13 @@ namespace KoenZomers.Ring.Api.Entities
         /// <summary>
         /// Unique identifier of this historical event
         /// </summary>
-        [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        [JsonPropertyName("id")]
+        public long? Id { get; set; }
 
         /// <summary>
         /// Raw date time string when this event occurred
         /// </summary>
-        [JsonProperty(PropertyName = "created_at")]
+        [JsonPropertyName("created_at")]
         public string CreatedAt { get; set; }
 
         /// <summary>
@@ -40,25 +40,25 @@ namespace KoenZomers.Ring.Api.Entities
         /// <summary>
         /// Boolean indicating if the ring was answered
         /// </summary>
-        [JsonProperty(PropertyName = "answered")]
+        [JsonPropertyName("answered")]
         public bool Answered { get; set; }
 
-        [JsonProperty(PropertyName = "events")]
+        [JsonPropertyName("events")]
         public List<object> Events { get; set; }
 
-        [JsonProperty(PropertyName = "kind")]
+        [JsonPropertyName("kind")]
         public string Kind { get; set; }
 
-        [JsonProperty(PropertyName = "favorite")]
+        [JsonPropertyName("favorite")]
         public bool Favorite { get; set; }
 
-        [JsonProperty(PropertyName = "snapshot_url")]
+        [JsonPropertyName("snapshot_url")]
         public string SnapshotUrl { get; set; }
 
-        [JsonProperty(PropertyName = "recording")]
+        [JsonPropertyName("recording")]
         public DoorbotHistoryEventRecording Recording { get; set; }
 
-        [JsonProperty(PropertyName = "doorbot")]
+        [JsonPropertyName("doorbot")]
         public Doorbot Doorbot { get; set; }
     }
 }

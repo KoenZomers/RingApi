@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using System.Collections.Generic;
 
 namespace KoenZomers.Ring.Api.Entities
@@ -11,25 +11,25 @@ namespace KoenZomers.Ring.Api.Entities
         /// <summary>
         /// All Ring doorbots
         /// </summary>
-        [JsonProperty(PropertyName = "doorbots")]
+        [JsonPropertyName("doorbots")]
         public List<Doorbot> Doorbots { get; set; }
 
         /// <summary>
         /// All Authorized Ring doorbots
         /// </summary>
-        [JsonProperty(PropertyName = "authorized_doorbots")]
+        [JsonPropertyName("authorized_doorbots")]
         public List<Doorbot> AuthorizedDoorbots { get; set; }
 
         /// <summary>
         /// All Ring chimes
         /// </summary>
-        [JsonProperty(PropertyName = "chimes")]
+        [JsonPropertyName("chimes")]
         public List<Chime> Chimes { get; set; }
 
         /// <summary>
         /// All Ring stickup cameras
         /// </summary>
-        [JsonProperty(PropertyName = "stickup_cams")]
+        [JsonPropertyName("stickup_cams")]
         public List<StickupCam> StickupCams { get; set; }
     }
 }

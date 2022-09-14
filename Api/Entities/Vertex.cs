@@ -1,13 +1,13 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace KoenZomers.Ring.Api.Entities
 {
     public class Vertex
     {
-        [JsonProperty("x")]
+        [JsonPropertyName("x")]
         public long? X { get; set; }
 
-        [JsonProperty("y")]
+        [JsonPropertyName("y")]
         public long? Y { get; set; }
     }
 }

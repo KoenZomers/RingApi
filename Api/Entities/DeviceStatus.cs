@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace KoenZomers.Ring.Api.Entities
 {
@@ -9,7 +9,7 @@ namespace KoenZomers.Ring.Api.Entities
         /// </summary>
         public partial class Status
         {
-            [JsonProperty("seconds_remaining")]
+            [JsonPropertyName("seconds_remaining")]
             public long? SecondsRemaining { get; set; }
         }
     }
