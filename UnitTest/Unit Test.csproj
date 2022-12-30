@@ -37,12 +37,9 @@
   </ItemGroup>
 	<Target Name="CopyConfig" AfterTargets="Build">
 		<CreateItem Include="$(ProjectDir)App.config">
-			<Output ItemName="ConfigFile" TaskParameter="Include"/>
+			<Output ItemName="ConfigFile" TaskParameter="Include" />
 		</CreateItem>
-		<Copy
-			SourceFiles="@(ConfigFile)"
-			DestinationFiles="$(OutDir)testhost.dll.config"
-			Condition="Exists('%(RootDir)%(Directory)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(ConfigFile)" DestinationFiles="$(OutDir)testhost.dll.config" Condition="Exists('%(RootDir)%(Directory)%(Filename)%(Extension)')" />
 	</Target>
 
 </Project>

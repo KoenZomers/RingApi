@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using KoenZomers.Ring.Api.Converters;
 
 namespace KoenZomers.Ring.Api.Entities
 {
@@ -23,6 +24,8 @@ namespace KoenZomers.Ring.Api.Entities
         public bool? SubscribedMotions { get; set; }
 
         [JsonPropertyName("battery_life")]
+        [JsonConverter(typeof(BatteryLifeConverter))]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public int? BatteryLife { get; set; }
 
         [JsonPropertyName("external_connection")]
