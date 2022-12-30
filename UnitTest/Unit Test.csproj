@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -35,14 +35,14 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <Target Name="CopyConfig" AfterTargets="Build">
-    <CreateItem Include="$(ProjectDir)App.config">
-      <Output ItemName="ConfigFile" TaskParameter="Include"/>
-    </CreateItem>
-    <Copy
-            SourceFiles="@(ConfigFile)"
-            DestinationFiles="$(OutDir)testhost.dll.config"
-            Condition="Exists('%(RootDir)%(Directory)%(Filename)%(Extension)')" />
-  </Target>
+	<Target Name="CopyConfig" AfterTargets="Build">
+		<CreateItem Include="$(ProjectDir)App.config">
+			<Output ItemName="ConfigFile" TaskParameter="Include"/>
+		</CreateItem>
+		<Copy
+			SourceFiles="@(ConfigFile)"
+			DestinationFiles="$(OutDir)testhost.dll.config"
+			Condition="Exists('%(RootDir)%(Directory)%(Filename)%(Extension)')" />
+	</Target>
 
 </Project>
