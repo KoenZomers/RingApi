@@ -23,6 +23,7 @@ namespace KoenZomers.Ring.Api.Entities
         public bool? SubscribedMotions { get; set; }
 
         [JsonPropertyName("battery_life")]
+        [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
         public int? BatteryLife { get; set; }
 
         [JsonPropertyName("external_connection")]

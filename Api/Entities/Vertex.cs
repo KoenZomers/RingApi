@@ -5,9 +5,9 @@ namespace KoenZomers.Ring.Api.Entities
     public class Vertex
     {
         [JsonPropertyName("x")]
-        public long? X { get; set; }
+        public double? X { get; set; }
 
         [JsonPropertyName("y")]
-        public long? Y { get; set; }
+        public double? Y { get; set; }
     }
 }
