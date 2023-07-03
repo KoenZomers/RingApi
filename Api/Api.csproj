@@ -12,7 +12,7 @@
     <Description>API in .NET to communicate with the Ring Doorbell service</Description>
     <PackageProjectUrl>https://github.com/KoenZomers/RingApi</PackageProjectUrl>
     <AssemblyVersion>0.5.1.0</AssemblyVersion>
-    <PackageReleaseNotes>- Changing ClientId to restore access to the Ring services</PackageReleaseNotes>
+    <PackageReleaseNotes>- Updated default clientId from Windows to Android to restore the service to the Ring API. Thanks to @chrisstuart-cl for assisting on the fix.</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Copyright>Koen Zomers</Copyright>
     <FileVersion>0.5.1.0</FileVersion>
