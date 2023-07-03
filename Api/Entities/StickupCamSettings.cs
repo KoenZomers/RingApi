@@ -6,7 +6,7 @@ namespace KoenZomers.Ring.Api.Entities
     {
         [JsonPropertyName("enable_vod")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public long? EnableVod { get; set; }
+        public bool? EnableVod { get; set; }
 
         [JsonPropertyName("exposure_control")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

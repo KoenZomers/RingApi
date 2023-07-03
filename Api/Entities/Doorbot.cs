@@ -24,6 +24,7 @@ namespace KoenZomers.Ring.Api.Entities
         public bool? SubscribedMotions { get; set; }
 
         [JsonPropertyName("battery_life")]
+        [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
         [JsonConverter(typeof(BatteryLifeConverter))]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public int? BatteryLife { get; set; }

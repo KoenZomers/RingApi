@@ -47,11 +47,11 @@ namespace KoenZomers.Ring.Api.Entities
 
         [JsonPropertyName("latitude")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public long? Latitude { get; set; }
+        public double? Latitude { get; set; }
 
         [JsonPropertyName("longitude")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public long? Longitude { get; set; }
+        public double? Longitude { get; set; }
 
         [JsonPropertyName("address")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -107,7 +107,7 @@ namespace KoenZomers.Ring.Api.Entities
 
         [JsonPropertyName("led_status")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public DeviceStatus LedStatus { get; set; }
+        public string LedStatus { get; set; }
 
         [JsonPropertyName("siren_status")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
