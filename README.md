@@ -22,6 +22,10 @@ If you're looking for a tool to download snapshots from your Ring cameras, [go h
 
 ## Version History
 
+[0.5.2.0](https://www.nuget.org/packages/KoenZomers.Ring.Api/0.5.2.0) - released July 4, 2023
+
+- Fixed issue with Ring devices not properly being parsed
+
 [0.5.1.0](https://www.nuget.org/packages/KoenZomers.Ring.Api/0.5.1.0) - released July 3, 2023
 
 - Updated default clientId from Windows to Android to restore the service to the Ring API. Thanks to [@chrisstuart-cl](https://github.com/chrisstuart-cl) for assisting on the fix.

@@ -6,20 +6,28 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\KoenZomers.Ring.Api.snk</AssemblyOriginatorKeyFile>
     <AssemblyName>KoenZomers.Ring.Api</AssemblyName>
-    <Version>0.5.1.0</Version>
+    <Version>0.5.2.0</Version>
     <Company>Koen Zomers</Company>
     <Authors>Koen Zomers</Authors>
     <Description>API in .NET to communicate with the Ring Doorbell service</Description>
     <PackageProjectUrl>https://github.com/KoenZomers/RingApi</PackageProjectUrl>
-    <AssemblyVersion>0.5.1.0</AssemblyVersion>
-    <PackageReleaseNotes>- Updated default clientId from Windows to Android to restore the service to the Ring API. Thanks to @chrisstuart-cl for assisting on the fix.</PackageReleaseNotes>
+    <AssemblyVersion>0.5.2</AssemblyVersion>
+    <PackageReleaseNotes>- Fixed issue with Ring devices not properly being parsed</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Copyright>Koen Zomers</Copyright>
-    <FileVersion>0.5.1.0</FileVersion>
+    <FileVersion>0.5.2</FileVersion>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/KoenZomers/RingApi</RepositoryUrl>
+    <PackageLicenseExpression> EPL-2.0</PackageLicenseExpression>
+    <PackageTags>Ring;Ring Api;Ring Doorbell;.NET;C#</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="..\KoenZomers.Ring.Api.snk" Link="KoenZomers.Ring.Api.snk" />
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 
