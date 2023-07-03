@@ -155,7 +155,7 @@ namespace KoenZomers.Ring.Api
                 { "grant_type", "password" },
                 { "username", Username },
                 { "password", Password},
-                { "client_id", "RingWindows" },
+                { "client_id", "ring_official_android" },
                 { "scope", "client" }
             };
 
