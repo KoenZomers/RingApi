@@ -17,10 +17,14 @@
 
 This library for C# compiled against .NET 6 will allow you to easily communicate with the Ring API and retrieve details about your Ring doorbells and Ring chimes.
 
-If you're just looking for a tool to download your Ring recordings, [go here instead](https://github.com/KoenZomers/RingRecordingDownload).
+If you're just looking for a tool to download your Ring recordings, [go here instead](https://github.com/KoenZomers/RingRecordingDownload).  
 If you're looking for a tool to download snapshots from your Ring cameras, [go here](https://github.com/KoenZomers/RingSnapshotDownload).
 
 ## Version History
+
+[0.5.1.0](https://www.nuget.org/packages/KoenZomers.Ring.Api/0.5.1.0) - released July 3, 2023
+
+- Updated default clientId from Windows to Android to restore the service to the Ring API. Thanks to [@chrisstuart-cl](https://github.com/chrisstuart-cl) for assisting on the fix.
 
 [0.5.0.1](https://www.nuget.org/packages/KoenZomers.Ring.Api/0.5.0.1) - released September 14, 2022
 

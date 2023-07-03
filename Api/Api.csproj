@@ -11,13 +11,11 @@
     <Authors>Koen Zomers</Authors>
     <Description>API in .NET to communicate with the Ring Doorbell service</Description>
     <PackageProjectUrl>https://github.com/KoenZomers/RingApi</PackageProjectUrl>
-    <AssemblyVersion>0.5.0.1</AssemblyVersion>
-    <PackageReleaseNotes>
-		- Fixing regression in multi factor authentication
-	</PackageReleaseNotes>
+    <AssemblyVersion>0.5.1.0</AssemblyVersion>
+    <PackageReleaseNotes>- Changing ClientId to restore access to the Ring services</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Copyright>Koen Zomers</Copyright>
-    <FileVersion>0.5.0.1</FileVersion>
+    <FileVersion>0.5.1.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
