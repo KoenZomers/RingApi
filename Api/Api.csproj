@@ -6,16 +6,16 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\KoenZomers.Ring.Api.snk</AssemblyOriginatorKeyFile>
     <AssemblyName>KoenZomers.Ring.Api</AssemblyName>
-    <Version>0.5.2.0</Version>
+    <Version>0.5.3.0</Version>
     <Company>Koen Zomers</Company>
     <Authors>Koen Zomers</Authors>
     <Description>API in .NET to communicate with the Ring Doorbell service</Description>
     <PackageProjectUrl>https://github.com/KoenZomers/RingApi</PackageProjectUrl>
-    <AssemblyVersion>0.5.2</AssemblyVersion>
-    <PackageReleaseNotes>- Fixed issue with Ring devices not properly being parsed</PackageReleaseNotes>
+    <AssemblyVersion>0.5.3</AssemblyVersion>
+    <PackageReleaseNotes>- Fixed a few more issues with Ring devices not properly being parsed</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Copyright>Koen Zomers</Copyright>
-    <FileVersion>0.5.2</FileVersion>
+    <FileVersion>0.5.3</FileVersion>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/KoenZomers/RingApi</RepositoryUrl>
     <PackageLicenseExpression> EPL-2.0</PackageLicenseExpression>
