@@ -99,11 +99,11 @@ namespace KoenZomers.Ring.Api.Entities
 
         [JsonPropertyName("battery_voltage")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public long? BatteryVoltage { get; set; }
+        public decimal? BatteryVoltage { get; set; }
 
         [JsonPropertyName("battery_voltage_2")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public long? BatteryVoltage2 { get; set; }
+        public decimal? BatteryVoltage2 { get; set; }
 
         [JsonPropertyName("led_status")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
