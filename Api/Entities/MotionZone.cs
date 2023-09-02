@@ -6,6 +6,7 @@ namespace KoenZomers.Ring.Api.Entities
     {
         [JsonPropertyName("enable_audio")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonConverter(typeof(Converters.BooleanConverter))]
         public bool? EnableAudio { get; set; }
 
         [JsonPropertyName("active_motion_filter")]

@@ -6,15 +6,12 @@ namespace KoenZomers.Ring.Api.Entities
     {
         [JsonPropertyName("enable_vod")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonConverter(typeof(Converters.BooleanConverter))]
         public bool? EnableVod { get; set; }
 
         [JsonPropertyName("exposure_control")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public long? ExposureControl { get; set; }
-
-        [JsonPropertyName("motion_zones")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public MotionZone MotionZones { get; set; }
 
         [JsonPropertyName("motion_snooze_preset_profile")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

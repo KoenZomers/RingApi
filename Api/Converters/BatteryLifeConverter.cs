@@ -4,6 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace KoenZomers.Ring.Api.Converters;
 
+/// <summary>
+/// Converts JSON to from a numeric of string value to a numeric value
+/// </summary>
 public class BatteryLifeConverter : JsonConverter<int?>
 {
     public override int? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
