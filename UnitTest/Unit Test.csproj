@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
@@ -19,11 +19,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="2.2.8" />
-    <PackageReference Include="MSTest.TestFramework" Version="2.2.8" />
-    <PackageReference Include="coverlet.collector" Version="3.1.2" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.1.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
+    <PackageReference Include="coverlet.collector" Version="6.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,12 +40,9 @@
   </ItemGroup>
 	<Target Name="CopyConfig" AfterTargets="Build">
 		<CreateItem Include="$(ProjectDir)App.config">
-			<Output ItemName="ConfigFile" TaskParameter="Include"/>
+			<Output ItemName="ConfigFile" TaskParameter="Include" />
 		</CreateItem>
-		<Copy
-			SourceFiles="@(ConfigFile)"
-			DestinationFiles="$(OutDir)testhost.dll.config"
-			Condition="Exists('%(RootDir)%(Directory)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(ConfigFile)" DestinationFiles="$(OutDir)testhost.dll.config" Condition="Exists('%(RootDir)%(Directory)%(Filename)%(Extension)')" />
 	</Target>
 
 </Project>
