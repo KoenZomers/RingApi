@@ -165,6 +165,7 @@ namespace KoenZomers.Ring.Api
             {
                 headerFields.Add("2fa-support", "true");
                 headerFields.Add("2fa-code", twoFactorAuthCode);
+                headerFields.Add("hardware_id", hardwareId);
             }
 
             // Make the Form POST request to request an OAuth Token

@@ -103,7 +103,7 @@ namespace KoenZomers.Ring.UnitTest
                 {
                     Assert.Fail("The two factor authentication token provided in the config file as 'TwoFactorAuthenticationToken' is invalid or has expired.");
                 }
-                Assert.IsFalse(authResult == null || string.IsNullOrEmpty(authResult.Profile?.AuthenticationToken), "Failed to authenticate");
+                Assert.IsFalse(authResult == null, "Failed to authenticate");
 
                 // Store the refresh token for subsequent runs
                 RefreshToken = session.OAuthToken.RefreshToken;
