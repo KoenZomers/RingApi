@@ -6,6 +6,7 @@ using System.IO;
 using System.Threading;
 using System.Text.Json;
 using KoenZomers.Ring.Api.Entities;
+using System.Collections.Specialized;
 
 namespace KoenZomers.Ring.Api
 {
@@ -160,12 +161,14 @@ namespace KoenZomers.Ring.Api
             };
 
             // If a two factor auth code has been provided, add the code through the HTTP POST header
-            var headerFields = new System.Collections.Specialized.NameValueCollection();
+            var headerFields = new NameValueCollection(capacity: 3) 
+            {
+                { "hardware_id", hardwareId }
+            };
             if (twoFactorAuthCode != null)
             {
                 headerFields.Add("2fa-support", "true");
                 headerFields.Add("2fa-code", twoFactorAuthCode);
-                headerFields.Add("hardware_id", hardwareId);
             }
 
             // Make the Form POST request to request an OAuth Token
@@ -244,12 +247,16 @@ namespace KoenZomers.Ring.Api
                 { "refresh_token", refreshToken }
             };
 
+            var headerFields = new NameValueCollection()
+            { 
+                { "hardware_id", "unespecified" }
+            };
             // Make the Form POST request to request an OAuth Token
             try
             {
                 var oAuthResponse = await _httpUtility.FormPost(RingApiOAuthUrl,
                                                                 oAuthformFields,
-                                                                null);
+                                                                headerFields);
 
 
                 // Deserialize the JSON result into a typed object
