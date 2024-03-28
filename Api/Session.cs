@@ -249,7 +249,7 @@ namespace KoenZomers.Ring.Api
 
             var headerFields = new NameValueCollection()
             { 
-                { "hardware_id", "unespecified" }
+                { "hardware_id", "unspecified" }
             };
             // Make the Form POST request to request an OAuth Token
             try
