@@ -1,8 +1,10 @@
 {
-  "ExpandedNodes": [
-    "",
-    "\\Api"
-  ],
-  "SelectedNode": "\\Api\\Session.cs",
-  "PreviewInSolutionExplorer": false
+    "ExpandedNodes": [
+        "",
+        "\\Api",
+        "\\Documentation",
+        "\\UnitTest"
+    ],
+    "SelectedNode": "\\Api\\HttpUtility.cs",
+    "PreviewInSolutionExplorer": false
 }
