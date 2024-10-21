@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
@@ -37,12 +37,9 @@
   </ItemGroup>
 	<Target Name="CopyConfig" AfterTargets="Build">
 		<CreateItem Include="$(ProjectDir)App.config">
-			<Output ItemName="ConfigFile" TaskParameter="Include"/>
+			<Output ItemName="ConfigFile" TaskParameter="Include" />
 		</CreateItem>
-		<Copy
-			SourceFiles="@(ConfigFile)"
-			DestinationFiles="$(OutDir)testhost.dll.config"
-			Condition="Exists('%(RootDir)%(Directory)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(ConfigFile)" DestinationFiles="$(OutDir)testhost.dll.config" Condition="Exists('%(RootDir)%(Directory)%(Filename)%(Extension)')" />
 	</Target>
 
 </Project>

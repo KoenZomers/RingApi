@@ -30,6 +30,7 @@ namespace KoenZomers.Ring.Api.Entities
         public bool? SubscribedMotions { get; set; }
 
         [JsonPropertyName("battery_life")]
+        [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public long? BatteryLife { get; set; }
 
@@ -94,6 +95,7 @@ namespace KoenZomers.Ring.Api.Entities
         public Owner Owner { get; set; }
 
         [JsonPropertyName("battery_life_2")]
+        [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public long? BatteryLife2 { get; set; }
 
@@ -107,7 +109,7 @@ namespace KoenZomers.Ring.Api.Entities
 
         [JsonPropertyName("led_status")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public string LedStatus { get; set; }
+        public DeviceStatus LedStatus { get; set; }
 
         [JsonPropertyName("siren_status")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
