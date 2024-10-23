@@ -1,21 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
         <RootNamespace>KoenZomers.Ring.Api</RootNamespace>
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>..\KoenZomers.Ring.Api.snk</AssemblyOriginatorKeyFile>
         <AssemblyName>KoenZomers.Ring.Api</AssemblyName>
-        <Version>0.5.4.0</Version>
+        <Version>$(ApiVersion)</Version>
         <Company>Koen Zomers</Company>
         <Authors>Koen Zomers, Daniel Espinosa</Authors>
         <Description>API in .NET to communicate with the Ring Doorbell service</Description>
         <PackageProjectUrl>https://github.com/KoenZomers/RingApi</PackageProjectUrl>
-        <AssemblyVersion>0.5.4</AssemblyVersion>
+        <AssemblyVersion>$(ApiVersion)</AssemblyVersion>
         <PackageReleaseNotes>- Fixed 406 Http Response issue due to missing headers in http calls.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Copyright>Koen Zomers</Copyright>
-        <FileVersion>0.5.4</FileVersion>
+        <FileVersion>$(ApiVersion)</FileVersion>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <RepositoryUrl>https://github.com/KoenZomers/RingApi</RepositoryUrl>
         <PackageLicenseExpression> EPL-2.0</PackageLicenseExpression>
