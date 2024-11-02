@@ -1,0 +1,6 @@
+<Project>
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ApiVersion>1.0.0.0</ApiVersion>
+    </PropertyGroup>
+</Project>
